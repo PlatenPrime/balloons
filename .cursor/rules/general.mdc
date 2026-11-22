@@ -1,0 +1,12 @@
+---
+description: General coding standards for balloons TypeScript monorepo
+alwaysApply: true
+---
+
+# General
+
+- TypeScript strict; prefer small pure modules and explicit ports over hidden coupling.
+- Root CI bar: `format:check` + `lint` + `test:run` + `build`.
+- Do not introduce Mongo, real scrape networks, or prod deploy wiring before the roadmap phase allows it.
+- Match existing file layout and naming; avoid drive-by refactors unrelated to the task.
+- Comments only for non-obvious intent; no narrating what the code already says.

@@ -1,0 +1,11 @@
+---
+description: Vitest, fixtures-first, CI bar for tests
+alwaysApply: true
+---
+
+# Tests
+
+- Stack: Vitest. Root script `test:run` must stay green in CI.
+- Parsers and scrape pipeline: HTML fixture packs only in CI; no live fetch.
+- Cover ports/adapters with in-memory stores; assert `-1` / invalid semantics where defined.
+- Prefer focused unit/integration tests over brittle e2e until fronts exist.

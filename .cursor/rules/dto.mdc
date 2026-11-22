@@ -1,0 +1,11 @@
+---
+description: DTO and boundary validation with Zod at HTTP and fixture edges
+globs: "**/*.{ts,tsx}"
+alwaysApply: false
+---
+
+# DTO
+
+- Validate request/response and fixture manifests with Zod at system boundaries.
+- Keep domain types in `packages/domain`; map DTOs at the edge, do not leak raw HTTP shapes inward.
+- Prefer explicit schemas over `any` / unchecked casts.

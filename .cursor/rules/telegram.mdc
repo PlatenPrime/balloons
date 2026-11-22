@@ -1,0 +1,10 @@
+---
+description: Never send real Telegram messages from tests or CI
+alwaysApply: true
+---
+
+# Telegram
+
+- Notifications in tests and CI must use mocks only.
+- Do not call real Telegram APIs from unit/integration tests.
+- Production notify adapters stay behind a port; inject a no-op or spy in test factories.

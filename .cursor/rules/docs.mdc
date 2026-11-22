@@ -1,0 +1,10 @@
+---
+description: docs-with-code — document modules and APIs alongside implementation
+alwaysApply: true
+---
+
+# Docs
+
+- New or changed module/API/frontend surface → update `docs/modules/`, `docs/api/`, or `docs/frontend/` in the same change.
+- Keep `docs/ROADMAP.md` checkboxes in sync with completed work.
+- Prefer short, concrete docs over aspirational prose. Link to ports and fixture contracts when relevant.

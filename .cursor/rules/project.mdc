@@ -1,0 +1,13 @@
+---
+description: balloons monorepo layout, isolation from warehouse, phase discipline
+alwaysApply: true
+---
+
+# Project
+
+- `balloons` is competitive intelligence (slices + reporting), not the warehouse.
+- Warehouse stays in `btw-wh-server`. Do not change wh “for balloons” until cutover is declared.
+- Early phases: no prod deploy, no Mongo collections. Persist via in-memory mocks / fixtures.
+- Monorepo: `apps/*` (api, later fronts/extension), `packages/*` (domain, memory, browser, …), `fixtures/pages/<konk>/`.
+- One API process; two fronts later (`web-slices`, `web-analytics`).
+- Follow `docs/ROADMAP.md` phase order; do not skip phases. Update checkboxes when a phase DoD is met.
