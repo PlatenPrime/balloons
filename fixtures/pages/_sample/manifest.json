@@ -1,0 +1,32 @@
+{
+  "konk": "_sample",
+  "slots": [
+    {
+      "id": "sku-page",
+      "file": "sku-page.html",
+      "meta": {
+        "url": "https://example.com/product/1",
+        "productId": "P1"
+      },
+      "expected": {
+        "stock": 10,
+        "price": 99.5
+      }
+    },
+    {
+      "id": "skugr-page",
+      "file": "skugr-page.html",
+      "meta": {
+        "url": "https://example.com/group/1"
+      },
+      "expected": {
+        "products": [
+          {
+            "productId": "P1",
+            "url": "https://example.com/product/1"
+          }
+        ]
+      }
+    }
+  ]
+}

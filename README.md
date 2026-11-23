@@ -40,7 +40,8 @@ Override port with `PORT`.
 
 ```
 apps/api          Express API (Phase 0: health only)
-packages/*        domain / memory / browser / … (later phases)
-fixtures/pages    HTML fixture packs per competitor
+packages/domain   types, ports, sliceDate, -1, fixture schema
+packages/memory   InMemory* stores + seed factories
+fixtures/pages    HTML fixture packs per competitor (`_sample` dummy)
 docs/             ROADMAP + module docs
 ```

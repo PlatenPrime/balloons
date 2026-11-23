@@ -187,15 +187,15 @@ onSliceStockMutated({ konk, day, ... }) — хук после записи то�
 
 **Сделать:**
 
-- [ ] `packages/domain`: типы `Sku`, `Skugr`, `Konk`, `Prod`, slice point `{ stock, price }`, day-meta, stock-band
-- [ ] Порты: `CatalogStore`, `SliceStore`, `PageSource`, `onSliceStockMutated`
-- [ ] `sliceDate` API с именованными сценариями (open/next/compensation)
-- [ ] Семантика `-1`, helpers invalid
-- [ ] `packages/memory`: in-memory stores + factories
-- [ ] Zod/JSON schema для `fixtures/pages/<konk>/manifest.json`
-- [ ] Dummy pack `fixtures/pages/_sample/` для проверки загрузчика
-- [ ] Тесты memory + schema + sliceDate
-- [ ] `docs/modules/domain.md`, `docs/modules/fixtures.md`
+- [x] `packages/domain`: типы `Sku`, `Skugr`, `Konk`, `Prod`, slice point `{ stock, price }`, day-meta, stock-band
+- [x] Порты: `CatalogStore`, `SliceStore`, `PageSource`, `onSliceStockMutated`
+- [x] `sliceDate` API с именованными сценариями (open/next/compensation)
+- [x] Семантика `-1`, helpers invalid
+- [x] `packages/memory`: in-memory stores + factories
+- [x] Zod/JSON schema для `fixtures/pages/<konk>/manifest.json`
+- [x] Dummy pack `fixtures/pages/_sample/` для проверки загрузчика
+- [x] Тесты memory + schema + sliceDate
+- [x] `docs/modules/domain.md`, `docs/modules/fixtures.md`
 
 **DoD:** in-memory мир SKU/групп/точек в тестах; манифест валидируется; Mongo нет.
 
