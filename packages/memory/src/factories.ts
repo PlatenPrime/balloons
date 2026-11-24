@@ -1,5 +1,6 @@
 import type { Konk, Prod, Sku, Skugr, StockBand } from '@balloons/domain';
 import { createInMemoryCatalogStore } from './inMemoryCatalogStore.js';
+import { createInMemoryManufacturerDaySalesStore } from './inMemoryManufacturerDaySalesStore.js';
 import { createInMemorySliceStore, type InMemorySliceStoreOptions } from './inMemorySliceStore.js';
 
 export type SeedWorldInput = {
@@ -20,6 +21,7 @@ export type SeedWorldInput = {
 export type SeededWorld = {
   catalog: ReturnType<typeof createInMemoryCatalogStore>;
   slices: ReturnType<typeof createInMemorySliceStore>;
+  sales: ReturnType<typeof createInMemoryManufacturerDaySalesStore>;
   konk: Konk;
   prod: Prod;
   sku: Sku;
@@ -40,6 +42,7 @@ export function createSeededWorld(input: SeedWorldInput = {}): Promise<SeededWor
 async function seedWorld(input: SeedWorldInput): Promise<SeededWorld> {
   const catalog = createInMemoryCatalogStore();
   const slices = createInMemorySliceStore(input.sliceStoreOptions);
+  const sales = createInMemoryManufacturerDaySalesStore();
 
   const konkName = input.konk?.name ?? 'air';
   const prodName = input.prod?.name ?? 'sample-prod';
@@ -107,5 +110,5 @@ async function seedWorld(input: SeedWorldInput): Promise<SeededWorld> {
     });
   }
 
-  return { catalog, slices, konk, prod, sku, skugr, stockBand };
+  return { catalog, slices, sales, konk, prod, sku, skugr, stockBand };
 }

@@ -7,6 +7,7 @@ alwaysApply: true
 
 - TypeScript strict; prefer small pure modules and explicit ports over hidden coupling.
 - Root CI bar: `format:check` + `lint` + `test:run` + `build`.
+- New/changed behavior requires tests in the same change — see `tests.mdc`.
 - Do not introduce Mongo, real scrape networks, or prod deploy wiring before the roadmap phase allows it.
 - Match existing file layout and naming; avoid drive-by refactors unrelated to the task.
 - Comments only for non-obvious intent; no narrating what the code already says.

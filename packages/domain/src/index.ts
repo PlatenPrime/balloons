@@ -10,6 +10,7 @@ export type {
   StockBandKonk,
   StockBand,
   SlicePointKey,
+  ManufacturerDaySales,
 } from './types.js';
 
 export type {
@@ -17,6 +18,7 @@ export type {
   UpsertSlicePointInput,
   UpsertSliceDayMetaInput,
   SliceStore,
+  ManufacturerDaySalesStore,
   PageSource,
   SliceStockMutatedEvent,
   OnSliceStockMutated,

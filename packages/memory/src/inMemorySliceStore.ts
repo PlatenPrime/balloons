@@ -53,6 +53,21 @@ export function createInMemorySliceStore(options: InMemorySliceStoreOptions = {}
       }
       return result;
     },
+    async listPointsForProductRange(konkName, productId, from, to) {
+      const fromMs = toSliceDate(from).getTime();
+      const toMs = toSliceDate(to).getTime();
+      const prefix = `${konkName}\0${productId}\0`;
+      const result: Array<{ date: Date; point: SlicePoint }> = [];
+      for (const [key, point] of points) {
+        if (!key.startsWith(prefix)) continue;
+        const date = new Date(key.slice(prefix.length));
+        const t = date.getTime();
+        if (t < fromMs || t > toMs) continue;
+        result.push({ date, point });
+      }
+      result.sort((a, b) => a.date.getTime() - b.date.getTime());
+      return result;
+    },
     async getDayMeta(konkName, date) {
       return dayMetas.get(dayMetaKey(konkName, date)) ?? null;
     },

@@ -23,6 +23,10 @@ describe('in-memory catalog + slices', () => {
 
     const listed = await world.slices.listPointsForDay('air', day);
     expect(listed).toEqual([{ productId: 'air-P1', point: { stock: 10, price: 99.5 } }]);
+
+    const ranged = await world.slices.listPointsForProductRange('air', 'air-P1', day, day);
+    expect(ranged).toEqual([{ date: toSliceDate(day), point: { stock: 10, price: 99.5 } }]);
+    expect(world.sales).toBeDefined();
   });
 
   it('writes -1 points as invalid and fires onSliceStockMutated', async () => {

@@ -91,3 +91,13 @@ export type SlicePointKey = {
   productId: string;
   date: Date;
 };
+
+/** Flat manufacturer day rollup: sales for one konk × prod × slice day. */
+export type ManufacturerDaySales = {
+  konkName: string;
+  /** Slice day key: `YYYY-MM-DDT00:00:00.000Z`. */
+  date: Date;
+  prodName: string;
+  salesPcs: number;
+  salesUah: number;
+};

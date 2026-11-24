@@ -4,20 +4,22 @@ Types, ports, `sliceDate`, `-1` helpers, scrape profiles, pack-flip detect, and 
 
 ## Types
 
-| Type            | Role                                     |
-| --------------- | ---------------------------------------- |
-| `Konk` / `Prod` | Competitor / manufacturer                |
-| `Sku` / `Skugr` | Card + group (`skuIds: string[]`)        |
-| `SlicePoint`    | `{ stock, price }` for one day           |
-| `SliceDayMeta`  | Day-run observability (rotation + stats) |
-| `StockBand`     | Saved anomalous stock range              |
+| Type                   | Role                                                      |
+| ---------------------- | --------------------------------------------------------- |
+| `Konk` / `Prod`        | Competitor / manufacturer                                 |
+| `Sku` / `Skugr`        | Card + group (`skuIds: string[]`)                         |
+| `SlicePoint`           | `{ stock, price }` for one day                            |
+| `SliceDayMeta`         | Day-run observability (rotation + stats)                  |
+| `StockBand`            | Saved anomalous stock range                               |
+| `ManufacturerDaySales` | Rollup `{ konkName, date, prodName, salesPcs, salesUah }` |
 
 Ids are plain strings (sandbox-friendly; not ObjectId).
 
 ## Ports
 
 - `CatalogStore` — read + seed + stock-band `updateStockBand` / `deleteStockBand`
-- `SliceStore` — points by `(konkName, productId, date)` + day-meta
+- `SliceStore` — points by `(konkName, productId, date)` + day-meta + `listPointsForProductRange`
+- `ManufacturerDaySalesStore` — materialize replace/list for manufacturer day sales
 - `PageSource.getSkuPageHtml(konk, url)` / `getSkugrPageHtml(konk, url)` — HTML source (`FixturePageSource` in `@balloons/browser`; HTTP later)
 - `OnSliceStockMutated` — hook after point writes
 

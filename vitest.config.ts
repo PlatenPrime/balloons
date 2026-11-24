@@ -11,6 +11,7 @@ export default defineConfig({
       '@balloons/memory': path.join(root, 'packages/memory/src/index.ts'),
       '@balloons/browser': path.join(root, 'packages/browser/src/index.ts'),
       '@balloons/slice-engine': path.join(root, 'packages/slice-engine/src/index.ts'),
+      '@balloons/reporting': path.join(root, 'packages/reporting/src/index.ts'),
     },
   },
   test: {

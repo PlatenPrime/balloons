@@ -11,21 +11,21 @@ CRUD каталога живёт здесь; analytics только читает
 
 ## Маршруты (целевые)
 
-| Path | Назначение |
-| ---- | ---------- |
-| `/login` | Auth (JWT) |
-| `/konks` | Список конкурентов |
-| `/konks/:id` | Detail + **client-ingest** panel (generic konk) |
-| `/skugrs` | Группы товаров |
-| `/skugrs/:id` | Detail группы |
-| `/skus` | Competitor SKUs |
-| `/skus/:id` | Detail SKU |
-| `/slices` | Day status + invalid points; запуск/poll `sliceJobs` |
-| `/pack-flips` | Discover pack-flip за диапазон |
-| `/band-spike` | Discover stock spikes в band + correct |
-| `/stock-bands` | CRUD anomalous stock-bands |
-| `/stock-bands/:id` | Detail + discover + batch-correct |
-| `/jobs` | Статус `sliceJobs` (или встроено в slices header) |
+| Path               | Назначение                                           |
+| ------------------ | ---------------------------------------------------- |
+| `/login`           | Auth (JWT)                                           |
+| `/konks`           | Список конкурентов                                   |
+| `/konks/:id`       | Detail + **client-ingest** panel (generic konk)      |
+| `/skugrs`          | Группы товаров                                       |
+| `/skugrs/:id`      | Detail группы                                        |
+| `/skus`            | Competitor SKUs                                      |
+| `/skus/:id`        | Detail SKU                                           |
+| `/slices`          | Day status + invalid points; запуск/poll `sliceJobs` |
+| `/pack-flips`      | Discover pack-flip за диапазон                       |
+| `/band-spike`      | Discover stock spikes в band + correct               |
+| `/stock-bands`     | CRUD anomalous stock-bands                           |
+| `/stock-bands/:id` | Detail + discover + batch-correct                    |
+| `/jobs`            | Статус `sliceJobs` (или встроено в slices header)    |
 
 Исключить из MVP: warehouse, btrade-slices, grabo (см. backlog ROADMAP).
 

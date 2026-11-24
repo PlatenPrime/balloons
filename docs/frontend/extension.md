@@ -10,12 +10,12 @@ Chrome MV3: захват HTML страницы конкурента → balloons
 
 ## Компоненты
 
-| Часть | Назначение |
-| ----- | ---------- |
-| Service worker | MV3 background; messaging |
-| Content / capture | Снять HTML текущей вкладки |
-| Bridge | Обмен с web-slices (JWT / session / ping) |
-| API calls | Typed client (`web-api-client` или тонкая обёртка) → ingest endpoints |
+| Часть             | Назначение                                                            |
+| ----------------- | --------------------------------------------------------------------- |
+| Service worker    | MV3 background; messaging                                             |
+| Content / capture | Снять HTML текущей вкладки                                            |
+| Bridge            | Обмен с web-slices (JWT / session / ping)                             |
+| API calls         | Typed client (`web-api-client` или тонкая обёртка) → ingest endpoints |
 
 Ориентир поведения: `btw-wh` air-capture + SPA bridge — пересобрать без hardcode одного konk.
 

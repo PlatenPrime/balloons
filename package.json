@@ -17,7 +17,7 @@
     "lint": "eslint .",
     "test": "vitest",
     "test:run": "vitest run",
-    "build": "npm run build -w @balloons/domain && npm run build -w @balloons/memory -w @balloons/browser && npm run build -w @balloons/slice-engine && npm run build -w @balloons/api --if-present",
+    "build": "npm run build -w @balloons/domain && npm run build -w @balloons/memory -w @balloons/browser && npm run build -w @balloons/slice-engine && npm run build -w @balloons/reporting && npm run build -w @balloons/api --if-present",
     "ci": "npm run format:check && npm run lint && npm run test:run && npm run build",
     "dev:api": "npm run dev -w @balloons/api"
   },

@@ -7,22 +7,22 @@ Phase **5.0** — HTTP surface на memory/engine/reporting. Детали роу
 
 ## Уже есть
 
-| Method | Path | Notes |
-| ------ | ---- | ----- |
-| `GET` | `/health` | `{ ok: true }` (Phase 0) |
+| Method | Path      | Notes                    |
+| ------ | --------- | ------------------------ |
+| `GET`  | `/health` | `{ ok: true }` (Phase 0) |
 
 ## Группы роутов (Phase 5.0)
 
-| Group | Назначение | Consumers |
-| ----- | ---------- | --------- |
-| Auth | Login / JWT; in-memory users | оба web, extension |
-| Catalog | Konk / Prod / Sku / Skugr read + минимальный write для ops | web-slices (CRUD), web-analytics (read filters) |
-| Slices | Day-meta, points, run, compensation, post-corrections, client-ingest pending/ingest | web-slices, extension |
-| Slice jobs | create / poll / cancel (`sliceJobs`) | web-slices |
-| Corrections extras | Pack-flips, band-spike, stock-bands CRUD + discover/batch-correct | web-slices |
-| Reports | JSON sales / stock / statistics / comparison aggregates | web-analytics |
-| Excel jobs | create / poll / download (CI kinds only) | web-analytics |
-| Browser debug | Fixture/parser debug helpers (local) | web-slices (optional) |
+| Group              | Назначение                                                                          | Consumers                                       |
+| ------------------ | ----------------------------------------------------------------------------------- | ----------------------------------------------- |
+| Auth               | Login / JWT; in-memory users                                                        | оба web, extension                              |
+| Catalog            | Konk / Prod / Sku / Skugr read + минимальный write для ops                          | web-slices (CRUD), web-analytics (read filters) |
+| Slices             | Day-meta, points, run, compensation, post-corrections, client-ingest pending/ingest | web-slices, extension                           |
+| Slice jobs         | create / poll / cancel (`sliceJobs`)                                                | web-slices                                      |
+| Corrections extras | Pack-flips, band-spike, stock-bands CRUD + discover/batch-correct                   | web-slices                                      |
+| Reports            | JSON sales / stock / statistics / comparison aggregates                             | web-analytics                                   |
+| Excel jobs         | create / poll / download (CI kinds only)                                            | web-analytics                                   |
+| Browser debug      | Fixture/parser debug helpers (local)                                                | web-slices (optional)                           |
 
 ## Cross-cutting
 

@@ -6,6 +6,8 @@ alwaysApply: true
 # Tests
 
 - Stack: Vitest. Root script `test:run` must stay green in CI.
+- **Every new or changed behavior** (module, port, formula, aggregate, job kind, adapter) **must** ship focused Vitest coverage in the **same** change. A phase DoD smoke checklist is not enough if public branches (filters, `-1` / recount edges, fail/cancel paths) stay untested.
+- An open roadmap **test-gap** corrective step blocks the next product phase until closed.
 - Parsers and scrape pipeline: HTML fixture packs only in CI; no live fetch.
 - Cover ports/adapters with in-memory stores; assert `-1` / invalid semantics where defined.
 - Prefer focused unit/integration tests over brittle e2e until fronts exist.

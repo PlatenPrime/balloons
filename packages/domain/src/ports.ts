@@ -1,5 +1,6 @@
 import type {
   Konk,
+  ManufacturerDaySales,
   Prod,
   Sku,
   Skugr,
@@ -54,8 +55,21 @@ export type SliceStore = {
     konkName: string,
     date: Date,
   ): Promise<Array<{ productId: string; point: SlicePoint }>>;
+  listPointsForProductRange(
+    konkName: string,
+    productId: string,
+    from: Date,
+    to: Date,
+  ): Promise<Array<{ date: Date; point: SlicePoint }>>;
   getDayMeta(konkName: string, date: Date): Promise<SliceDayMeta | null>;
   upsertDayMeta(input: UpsertSliceDayMetaInput): Promise<SliceDayMeta>;
+};
+
+export type ManufacturerDaySalesStore = {
+  /** Full replace of all prod buckets for one (konk, day). Empty rows clears the day. */
+  replaceDay(konkName: string, date: Date, rows: ManufacturerDaySales[]): Promise<void>;
+  listByKonkDateRange(konkName: string, from: Date, to: Date): Promise<ManufacturerDaySales[]>;
+  listByProdDateRange(prodName: string, from: Date, to: Date): Promise<ManufacturerDaySales[]>;
 };
 
 export type PageSource = {
