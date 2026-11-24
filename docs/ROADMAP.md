@@ -17,20 +17,23 @@
 
 Долгосрочно оба продукта могут смотреть в одну Mongo; **до cutover balloons работает как песочница** без прод-деплоя и без прод-БД.
 
+**Cutover gate:** переключение writer/прод с `btw-wh-server` на balloons **запрещено**, пока локально не закрыт DoD Phase 5 — один API + `web-slices` + `web-analytics` + extension. Phase 6 (live PageSource) опциональна и cutover **не** разблокирует.
+
 ---
 
 ## 1. Нерушимые правила
 
-| Правило                   | Смысл                                                                                      |
-| ------------------------- | ------------------------------------------------------------------------------------------ |
-| wh-isolation              | Пока не объявлен cutover, `btw-wh-server` не правим «под balloons». Прод-срезы только там. |
-| no-prod-deploy            | balloons не деплоим в прод на ранних фазах.                                                |
-| no-mongo-collections      | На фазах 0–6 **не работаем с Mongo-коллекциями**. Persist = in-memory моки форм моделей.   |
-| fixtures-first            | Парсинг и scrape-pipeline проверяются на **HTML fixture packs** конкурентов.               |
-| one-api-two-fronts        | Один Node API-процесс (срезы+отчёты); два фронта: `web-slices`, `web-analytics`.           |
-| ci-bar                    | `format:check` + `lint` + `test:run` + `build` на каждый PR; покрытие логики тестами.      |
-| docs-with-code            | Модуль/API → сразу `docs/modules                                                           | api | frontend`. |
-| no-real-telegram-in-tests | Уведомления только моки.                                                                   |
+| Правило                   | Смысл                                                                                                                         |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| wh-isolation              | Пока не объявлен cutover, `btw-wh-server` не правим «под balloons». Прод-срезы только там.                                    |
+| no-prod-deploy            | balloons не деплоим в прод на ранних фазах.                                                                                   |
+| no-mongo-collections      | На фазах 0–6 **не работаем с Mongo-коллекциями**. Persist = in-memory моки форм моделей.                                      |
+| fixtures-first            | Парсинг и scrape-pipeline проверяются на **HTML fixture packs** конкурентов.                                                  |
+| one-api-two-fronts        | Один Node API-процесс (срезы+отчёты); два фронта: `web-slices`, `web-analytics`.                                              |
+| three-part-before-cutover | Phase 7 (cutover) стартует только после DoD Phase 5: api + оба web + extension.                                               |
+| ci-bar                    | `format:check` + `lint` + `test:run` + `build` на каждый PR; покрытие логики тестами.                                         |
+| docs-with-code            | Модуль/API/frontend → сразу `docs/modules` / `docs/api` / `docs/frontend`.                                                    |
+| no-real-telegram-in-tests | Уведомления только моки.                                                                                                      |
 
 ---
 
@@ -51,6 +54,7 @@ balloons/
     browser/             # HTML parsers + StockFetcher registry
     slice-engine/        # run/compensation/corrections/client-ingest
     reporting/           # rollup + aggregates + excel builders
+    web-api-client/      # typed fetch + Zod DTO (оба фронта; extension по необходимости)
   fixtures/
     pages/
       <konk>/
@@ -97,8 +101,42 @@ onSliceStockMutated({ konk, day, ... }) — хук после записи то�
 - Один модуль `sliceDate` с явными функциями под cron / compensation / client-open.
 - Rollup через порт мутаций, не прямой import «отчётного» HTTP-модуля.
 - Новый konk = config + parser + fixture pack (без копипасты runner).
+- Два отдельных Vite-фронта вместо одного SPA со складом; общий только тонкий `web-api-client`.
 
-Ориентир поведения (не копипаст структуры): домены sku-slices / slices / browser / slice-compensation / sku-stock-bands / sku-reporting / excel-jobs / apitasks в wh.
+Ориентир поведения (не копипаст структуры): домены sku-slices / slices / browser / slice-compensation / sku-stock-bands / sku-reporting / excel-jobs / apitasks в wh; CI-экраны `btw-wh/web` → пересборка в `web-slices` / `web-analytics`.
+
+### 2.5 Frontend surface
+
+Инвентарь экранов до cutover = CI-паритет с `btw-wh` **без** склада / grabo / btrade. Детали маршрутов — в `docs/frontend/*`.
+
+#### `apps/web-slices` (ops)
+
+| Область                         | Назначение                                                                      |
+| ------------------------------- | ------------------------------------------------------------------------------- |
+| Auth                            | Login; JWT; in-memory users на Phase 5                                          |
+| Catalog                         | Konks / skugrs / competitor-skus (+ detail); CRUD здесь, не в analytics         |
+| Day slices                      | Статус дня, invalid points, запуск/poll `sliceJobs`                             |
+| Corrections                     | Compensation, post-corrections (через `sliceJobs`, без отдельного wh ApiTasks)  |
+| Pack-flips / band-spike / bands | Discover → preview/apply; stock-bands CRUD + batch-correct                      |
+| Client-ingest                   | Panel на konk (generic); bridge с extension                                     |
+
+Исключить из MVP: warehouse, btrade-slices, grabo (backlog).
+
+#### `apps/web-analytics` (reports)
+
+| Область        | Назначение                                                              |
+| -------------- | ----------------------------------------------------------------------- |
+| Sales / stock  | Time series по konk+prod[+skugr]                                        |
+| Statistics     | Manufacturer pie/stats + drill prod/skugr                               |
+| Comparison     | Across konks для prod; selected SKUs                                    |
+| Excel          | Order / list / download только CI kinds                                 |
+| Catalog filters| Read-only справочники через API (CRUD остаётся в web-slices)            |
+
+#### `apps/extension`
+
+Chrome MV3: capture HTML → balloons API (generic konk), JWT/bridge из web-slices.
+
+**Паттерн UI (ориентир, не догма):** Fetcher → Container → View; URL-driven filters; async jobs с poll/toast. UI-примитивы (Tailwind + Radix/shadcn-подобные) живут **внутри каждого app**; общего UI-kit на старте нет.
 
 ---
 
@@ -150,8 +188,9 @@ onSliceStockMutated({ konk, day, ... }) — хук после записи то�
 ## 4. Стек и CI
 
 **API / packages:** Node `>=26`, TypeScript strict, Express 5, Zod, Vitest, Prettier, ESLint.  
-**Front:** Vite + React + TS + TanStack Query.  
-**Scripts (root):** `ci` = `format:check && lint && test:run && build`.  
+**Front:** Vite + React + TS + TanStack Query + React Router + Zod + react-hook-form; Tailwind + Radix/shadcn-подобные примитивы per-app.  
+**Shared front:** `packages/web-api-client` — typed fetch + Zod DTO для обоих фронтов (и extension при необходимости).  
+**Scripts (root):** `ci` = `format:check && lint && test:run && build`; `dev:api`, `dev:web-slices`, `dev:web-analytics`; `build` включает api и оба фронта.  
 **CI:** GitHub Actions, Node 26, `npm ci` → `npm run ci`.  
 **Rules:** `.cursor/rules` — модульность, docs, dto, tests, telegram mocks.
 
@@ -159,7 +198,8 @@ onSliceStockMutated({ konk, day, ... }) — хук после записи то�
 
 ## 5. Фазы разработки
 
-Не прыгать через фазу; у каждой фазы есть **DoD**; чекбоксы обновлять здесь при завершении.
+Не прыгать через фазу; у каждой фазы есть **DoD**; чекбоксы обновлять здесь при завершении.  
+Подфазы Phase 5 (5.0 → 5.4) тоже строго по порядку.
 
 ### Phase 0 — Scaffold репозитория
 
@@ -258,23 +298,91 @@ onSliceStockMutated({ konk, day, ... }) — хук после записи то�
 
 **DoD:** rollup сходится с ручным расчётом; Excel job в worker; sliceJobs планируются независимо.
 
+**Блокер для Phase 5.0 reports/excel и 5.3:** без закрытого Phase 4 analytics-фронт и report-роуты не начинать.
+
 ---
 
 ### Phase 5 — HTTP API + два фронта + extension
 
-**Цель:** человеком управляемый продукт локально.
+**Цель:** человеком управляемый **трёхсоставной** продукт локально (api + web-slices + web-analytics; extension для ingest).  
+Не прыгать через подфазы 5.0 → 5.4. Общий DoD Phase 5 = сумма DoD подфаз.
+
+Ориентир UX: CI-поверхность `btw-wh/web` (пересборка, не копипаст). Документы: `docs/api/*`, `docs/frontend/*`.
+
+#### Phase 5.0 — API surface
+
+**Цель:** HTTP над memory/engine/reporting; CORS под два origin.
 
 **Сделать:**
 
-- [ ] `apps/api`: auth (JWT + in-memory users), routers slices/reports/excel-jobs/browser-debug
-- [ ] CORS под два origin фронтов
-- [ ] `apps/web-slices`
-- [ ] `apps/web-analytics`
-- [ ] `apps/extension` MV3
-- [ ] `docs/api/*`, `docs/frontend/*`
+- [ ] JWT auth + in-memory users
+- [ ] CORS под origins `web-slices` и `web-analytics`
+- [ ] Routers: catalog, slices (day/run/corrections/ingest), sliceJobs, stock-bands / pack-flips / band-spike, reports, excel-jobs, browser-debug
+- [ ] `packages/web-api-client` (typed client + Zod DTO)
 - [ ] API integration smoke (supertest)
+- [ ] `docs/api/*`
 
-**DoD:** локально api + оба web; прогон среза виден в UI.
+**DoD:** smoke по ключевым роутам на memory; оба фронт-origin в CORS; Mongo нет.
+
+#### Phase 5.1 — web-slices scaffold
+
+**Цель:** каркас ops-приложения.
+
+**Сделать:**
+
+- [ ] Vite + React + TS + TanStack Query + React Router в `apps/web-slices`
+- [ ] Auth (login) + shell/nav
+- [ ] Подключение `web-api-client`
+- [ ] Root scripts `dev:web-slices`; app в `build` / CI
+- [ ] `docs/frontend/web-slices.md` (маршруты scaffold)
+
+**DoD:** локально login + stub catalog/health page против api.
+
+#### Phase 5.2 — web-slices ops
+
+**Цель:** полный ops-контур срезов в UI.
+
+**Сделать:**
+
+- [ ] Catalog: konks / skugrs / competitor-skus (+ detail)
+- [ ] Day slices status + invalid points; create/poll/cancel `sliceJobs`
+- [ ] Compensation + post-corrections
+- [ ] Pack-flips, band-spike, stock-bands (+ discover/batch-correct)
+- [ ] Client-ingest panel на konk (generic)
+- [ ] Обновить `docs/frontend/web-slices.md`
+
+**DoD:** прогон дня по фикстурам виден в UI (статус дня / точки / jobs).
+
+#### Phase 5.3 — web-analytics scaffold + reports
+
+**Цель:** второй фронт; отчёты на memory данных (после Phase 4 + 5.0).
+
+**Сделать:**
+
+- [ ] Vite scaffold `apps/web-analytics` (тот же стек; свой shell)
+- [ ] Sales / stock time series
+- [ ] Statistics (+ prod/skugr drill)
+- [ ] Comparison (konks / selected skus)
+- [ ] Excel order / list / download (CI kinds only)
+- [ ] Root scripts `dev:web-analytics`; app в `build` / CI
+- [ ] `docs/frontend/web-analytics.md`
+
+**DoD:** отчёт (хотя бы sales + один excel kind) открывается на memory данных против того же api.
+
+#### Phase 5.4 — extension
+
+**Цель:** MV3 client-ingest, generic по konk.
+
+**Сделать:**
+
+- [ ] `apps/extension` MV3
+- [ ] Bridge с JWT / session из web-slices
+- [ ] Capture HTML → pending/ingest API
+- [ ] `docs/frontend/extension.md`
+
+**DoD:** capture → pending/ingest через api; UI pending в web-slices обновляется.
+
+**DoD Phase 5 (итог):** локально подняты api + оба web; прогон среза и базовый отчёт видны в UI; extension закрывает ingest-контур. Только после этого допустим старт Phase 7.
 
 ---
 
@@ -291,11 +399,15 @@ onSliceStockMutated({ konk, day, ... }) — хук после записи то�
 
 **DoD:** руками можно прогнать 1 SKU live; CI не ходит в сеть. Mongo/прод-деплой всё ещё нет.
 
+**Не разблокирует cutover:** Phase 6 можно пропустить или сделать после/параллельно подготовке Phase 7, но **не вместо** Phase 5.
+
 ---
 
 ### Phase 7 — Persistence + cutover (отдельный этап)
 
-Набросок; детализация в `docs/CUTOVER.md`, когда дойдём:
+**Precondition:** DoD Phase 5 закрыт (api + `web-slices` + `web-analytics` + extension). Без трёхсоставного локального MVP cutover не начинать.
+
+Детализация в `docs/CUTOVER.md`, когда дойдём:
 
 - [ ] Mongo adapters к тем же портам
 - [ ] shared DB vs staging DB
@@ -306,21 +418,21 @@ onSliceStockMutated({ konk, day, ... }) — хук после записи то�
 
 ## 6. Карта функционала wh → balloons
 
-| Область wh                          | Фаза balloons          |
-| ----------------------------------- | ---------------------- |
-| slices config/utils                 | 1–3                    |
-| browser parsers / stock             | 2–3                    |
-| sku-slices cron/run/day-meta/months | 3 (memory)             |
-| slice-compensation                  | 3                      |
-| sku-stock-bands + band-spike        | 3                      |
-| client air ingest → generic         | 3 + 5                  |
-| apitasks slice kinds                | 3 + 5 (`sliceJobs`)    |
-| sku-reporting rollup                | 4                      |
-| sku-sales/chart reports             | 4–5                    |
-| excel-jobs (sku kinds only)         | 4–5                    |
-| btrade-slices                       | после 5 (backlog)      |
-| skugrs fill / grabo sync            | backlog                |
-| warehouse excel/apitasks            | **никогда** в balloons |
+| Область wh                          | Фаза balloons                         |
+| ----------------------------------- | ------------------------------------- |
+| slices config/utils                 | 1–3                                   |
+| browser parsers / stock             | 2–3                                   |
+| sku-slices cron/run/day-meta/months | 3 (memory) + 5.0/5.2 (HTTP/UI)        |
+| slice-compensation                  | 3 + 5.2                               |
+| sku-stock-bands + band-spike        | 3 + 5.2                               |
+| client air ingest → generic         | 3 + 5.0/5.2/5.4                       |
+| apitasks slice kinds                | 3 + 5.0/5.2 (`sliceJobs`)             |
+| sku-reporting rollup                | 4                                     |
+| sku-sales/chart reports             | 4 + 5.0/5.3                           |
+| excel-jobs (sku kinds only)         | 4 + 5.0/5.3                           |
+| btrade-slices                       | после 5 (backlog)                     |
+| skugrs fill / grabo sync            | backlog                               |
+| warehouse excel/apitasks            | **никогда** в balloons                |
 
 ---
 
@@ -340,8 +452,8 @@ onSliceStockMutated({ konk, day, ... }) — хук после записи то�
 2. Отдельной сессией в воркспейсе balloons: **только Phase 0**.
 3. Phase 1.
 4. HTML packs → Phase 2 по konk.
-5. Phase 3 → 4 → 5.
-6. Phase 6 по желанию.
-7. Phase 7 — отдельное решение.
+5. Phase 3 → 4 → **5.0 → 5.1 → 5.2 → 5.3 → 5.4**.
+6. Phase 6 по желанию (не gate для cutover).
+7. Phase 7 — **только** после DoD Phase 5 (трёхсоставной MVP); отдельное решение + `docs/CUTOVER.md`.
 
 Чекбоксы здесь — статус прогресса. Новые идеи → Backlog или правка фазы **до** старта работ по ней.
