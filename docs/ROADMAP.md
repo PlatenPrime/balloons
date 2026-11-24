@@ -228,17 +228,17 @@ onSliceStockMutated({ konk, day, ... }) — хук после записи то�
 
 **Сделать:**
 
-- [ ] `runSliceForKonk({ konk, day })`: catalog → urls → PageSource → parser → SliceStore
-- [ ] Skip already-valid; write `-1` на soft-fail; abort policy из config
-- [ ] Throttle profiles (можно no-op delay в тестах)
-- [ ] Day-meta stats
-- [ ] Compensation runner
-- [ ] Pack-flip detect + preview/apply
-- [ ] Band-spike discover + RTL correct; stock-bands CRUD in-memory + batch-correct
-- [ ] Client-ingest: `listPending` + `ingestHtml` — **generic**, не только air
-- [ ] `sliceJobs` очередь (create/poll/cancel) in-process
-- [ ] Хук `onSliceStockMutated`
-- [ ] Тесты + `docs/modules/slice-engine.md`
+- [x] `runSliceForKonk({ konk, day })`: catalog → urls → PageSource → parser → SliceStore
+- [x] Skip already-valid; write `-1` на soft-fail; abort policy из config
+- [x] Throttle profiles (можно no-op delay в тестах)
+- [x] Day-meta stats
+- [x] Compensation runner
+- [x] Pack-flip detect + preview/apply
+- [x] Band-spike discover + RTL correct; stock-bands CRUD in-memory + batch-correct
+- [x] Client-ingest: `listPending` + `ingestHtml` — **generic**, не только air
+- [x] `sliceJobs` очередь (create/poll/cancel) in-process
+- [x] Хук `onSliceStockMutated`
+- [x] Тесты + `docs/modules/slice-engine.md`
 
 **DoD:** сценарий «прогон дня по фикстурам → точки → pending/PUT → pack-flip/band preview» покрыт тестами.
 

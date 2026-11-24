@@ -22,6 +22,8 @@ export type CatalogStore = {
   getSkugrById(id: string): Promise<Skugr | null>;
   listStockBands(filter?: { konkName?: string }): Promise<StockBand[]>;
   getStockBandById(id: string): Promise<StockBand | null>;
+  updateStockBand(band: StockBand): Promise<StockBand>;
+  deleteStockBand(id: string): Promise<boolean>;
 
   /** Minimal seed API for tests / sandbox. */
   seedKonk(konk: Konk): Promise<Konk>;

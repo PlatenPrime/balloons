@@ -4,7 +4,7 @@ In-memory adapters for domain ports. Used in unit/integration tests and early sa
 
 ## API
 
-- `createInMemoryCatalogStore()` — `CatalogStore`
+- `createInMemoryCatalogStore()` — `CatalogStore` (includes stock-band `updateStockBand` / `deleteStockBand`)
 - `createInMemorySliceStore({ onSliceStockMutated? })` — `SliceStore`; normalizes dates via `toSliceDate`; fires the mutation hook after `upsertPoint`
 - `createSeededWorld(input?)` — factory that seeds Konk/Prod/Sku/Skugr/StockBand and optional points
 

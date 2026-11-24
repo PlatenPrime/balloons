@@ -63,4 +63,20 @@ describe('in-memory catalog + slices', () => {
     expect(meta.rotationMeta).toEqual({ cycleDays: 7, dayIndex: 2, dueCount: 10 });
     expect(meta.stats).toEqual({ filled: 8, invalid: 2, errorCount: 0 });
   });
+
+  it('updates and deletes stock bands', async () => {
+    const world = await createSeededWorld();
+    const updated = await world.catalog.updateStockBand({
+      ...world.stockBand,
+      stockMin: 80,
+      stockMax: 180,
+      normalMax: 40,
+    });
+    expect(updated.stockMin).toBe(80);
+    expect(await world.catalog.getStockBandById(world.stockBand.id)).toEqual(updated);
+
+    expect(await world.catalog.deleteStockBand(world.stockBand.id)).toBe(true);
+    expect(await world.catalog.getStockBandById(world.stockBand.id)).toBeNull();
+    expect(await world.catalog.deleteStockBand(world.stockBand.id)).toBe(false);
+  });
 });

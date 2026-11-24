@@ -1,6 +1,6 @@
 # `@balloons/domain`
 
-Types, ports, `sliceDate`, `-1` helpers, and fixture manifest Zod schema. No I/O, no Mongo.
+Types, ports, `sliceDate`, `-1` helpers, scrape profiles, pack-flip detect, and fixture manifest Zod schema. No I/O, no Mongo.
 
 ## Types
 
@@ -16,7 +16,7 @@ Ids are plain strings (sandbox-friendly; not ObjectId).
 
 ## Ports
 
-- `CatalogStore` — read + seed for Konk/Prod/Sku/Skugr/StockBand
+- `CatalogStore` — read + seed + stock-band `updateStockBand` / `deleteStockBand`
 - `SliceStore` — points by `(konkName, productId, date)` + day-meta
 - `PageSource.getSkuPageHtml(konk, url)` / `getSkugrPageHtml(konk, url)` — HTML source (`FixturePageSource` in `@balloons/browser`; HTTP later)
 - `OnSliceStockMutated` — hook after point writes
@@ -39,6 +39,14 @@ Kyiv timezone `Europe/Kiev`, open hour `20`.
 - `isValidSliceMetricValue` — finite and not `-1`.
 - `isInvalidSlicePoint` — missing point, or `stock === -1 || price === -1`.
 - `isFullMinusOneStockPrice` — both sides `-1`.
+
+## Scrape profiles
+
+`resolveScrapeProfile(konk, runKind)` → `ScrapeProfile` (`requestJitter`, optional cluster/block/chunk, `consecutiveInvalidAbort`). `_sample` uses zero delay; `jitterMs` helps throttle.
+
+## Pack-flip detect
+
+Pure helpers: `detectInversePackFlip`, `detectPriceOnlyPackFlip`, `decidePackFlipPatchesForSeries`. Used by `@balloons/slice-engine` preview/apply.
 
 ## Fixtures
 

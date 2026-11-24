@@ -60,6 +60,16 @@ export function createInMemoryCatalogStore(): CatalogStore {
     async getStockBandById(id) {
       return bands.get(id) ?? null;
     },
+    async updateStockBand(band) {
+      if (!bands.has(band.id)) {
+        throw new Error(`StockBand not found: ${band.id}`);
+      }
+      bands.set(band.id, band);
+      return band;
+    },
+    async deleteStockBand(id) {
+      return bands.delete(id);
+    },
     async seedKonk(konk) {
       konks.set(konk.name, konk);
       return konk;
