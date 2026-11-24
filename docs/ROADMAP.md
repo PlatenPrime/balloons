@@ -70,7 +70,7 @@ balloons/
 ### 2.2 Порты (зависимости наружу)
 
 ```text
-PageSource.getSkuPageHtml(konk, url) -> html
+PageSource.getSkuPageHtml(konk, url) / getSkugrPageHtml(konk, url) -> html
 CatalogStore  — Konk / Prod / Sku / Skugr (read + минимальный seed API для тестов)
 SliceStore    — точки stock/price по (konk, productId, date) + day-meta
 onSliceStockMutated({ konk, day, ... }) — хук после записи точек
@@ -207,14 +207,14 @@ onSliceStockMutated({ konk, day, ... }) — хук после записи то�
 
 **Сделать:**
 
-- [ ] Интерфейс `parseSkuPage(html, ctx) → { stock, price, ... }`
-- [ ] Интерфейс `parseSkugrPage(html, ctx) → products[]`
-- [ ] Registry по `konk`
-- [ ] `FixturePageSource` читает pack с диска
+- [x] Интерфейс `parseSkuPage(html, ctx) → { stock, price, ... }`
+- [x] Интерфейс `parseSkugrPage(html, ctx) → products[]`
+- [x] Registry по `konk`
+- [x] `FixturePageSource` читает pack с диска
 - [ ] Подключение реальных packs по мере поставки
-- [ ] Golden tests: `expected` ↔ parser
-- [ ] Порт сложной логики из wh осознанно (не слепой copy)
-- [ ] `docs/modules/browser.md`
+- [x] Golden tests: `expected` ↔ parser
+- [x] Порт сложной логики из wh осознанно (не слепой copy)
+- [x] `docs/modules/browser.md`
 
 **DoD:** для каждого поставленного konk зелёные golden-тесты на `sku-page` (и `skugr-page`, если слот есть). Live HTTP выключен.
 

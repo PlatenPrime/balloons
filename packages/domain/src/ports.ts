@@ -58,6 +58,7 @@ export type SliceStore = {
 
 export type PageSource = {
   getSkuPageHtml(konk: string, url: string): Promise<string>;
+  getSkugrPageHtml(konk: string, url: string): Promise<string>;
 };
 
 export type SliceStockMutatedEvent = {

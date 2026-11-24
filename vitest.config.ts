@@ -9,6 +9,7 @@ export default defineConfig({
     alias: {
       '@balloons/domain': path.join(root, 'packages/domain/src/index.ts'),
       '@balloons/memory': path.join(root, 'packages/memory/src/index.ts'),
+      '@balloons/browser': path.join(root, 'packages/browser/src/index.ts'),
     },
   },
   test: {

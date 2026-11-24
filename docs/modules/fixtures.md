@@ -31,9 +31,11 @@ Shape (see ROADMAP §3):
 
 ## `_sample` pack
 
-[`fixtures/pages/_sample/`](../../fixtures/pages/_sample/) is the dummy pack for schema/loader checks. HTML is a stub; parsers arrive in Phase 2 (`FixturePageSource` + golden tests against `expected`).
+[`fixtures/pages/_sample/`](../../fixtures/pages/_sample/) is the dummy pack for schema/loader/golden checks. HTML is a stub with `data-*` attributes aligned to `expected`.
+
+Loader: `loadFixturePack` + `createFixturePageSource` in `@balloons/browser`. See [browser.md](browser.md).
 
 ## Rules
 
 - CI reads fixtures only; live fetch is forbidden in CI.
-- `expected` is the source of truth for parser golden tests (Phase 2+).
+- `expected` is the source of truth for parser golden tests.
