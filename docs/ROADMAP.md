@@ -311,13 +311,13 @@ Cart/AJAX konk may set `meta.responses` → companion JSON under the pack.
 
 **Сделать:**
 
-- [ ] `salesMath` / coalesce read-path: null gaps, delivery, recount edge cases
-- [ ] materialize: multi-SKU → multi-prod buckets; empty day clear; date-range backfill
-- [ ] schedule coalesce: trailing dirty re-run; `flushScheduledMaterialize` semantics
-- [ ] JSON aggregates: sku by-date/range, skugr daily/skus-sales, konk-prod groups, stock series, sales series with `skugrIds`, manufacturers-pie, prod-konks-pie + `excludeKonks`, selection pie (skuIds + selectAll)
-- [ ] excel: минимум 3 kinds сверх уже покрытых (`sku-konk-sales`, `sku-skugr-stock`, `sku-selection-sales` или catalog); assert sheet/content smoke
-- [ ] `excelJobs`: cancel queued/running, failed build → `failed`, `getFile` only when `ready`
-- [ ] worker: один тест против скомпилированного `excelJobWorker` (не только eval smoke)
+- [x] `salesMath` + coalesce read-path: null gaps в sequence; delivery; `computePersistedDaySales` + `recountDays`; `coalesceSlicePointsAlongDates` (`-1`/дыры не обновляют carry)
+- [x] materialize: multi-SKU → multi-prod buckets; empty day → `replaceDay([])`; `materializeManufacturerDaySalesDateRange`
+- [x] schedule coalesce: trailing dirty re-run (re-schedule while `running`); `flushScheduledMaterialize` до idle
+- [x] JSON aggregates: sku by-date/range, skugr daily/skus-sales, konk-prod groups, stock series, sales series with `skugrIds`, manufacturers-pie, prod-konks-pie + `excludeKonks`, selection pie (skuIds + selectAll); miss/empty resolve → null/empty где контракт требует
+- [x] excel: ≥3 kinds сверх `sku-one-sales` (`sku-konk-sales`, `sku-skugr-stock`, `sku-selection-sales`); ExcelJS sheet/content smoke
+- [x] `excelJobs`: cancel queued/running; failed build → `failed`; `getFile` only when `ready`
+- [x] worker: один тест через `createExcelJobQueue({ workerUrl → dist/.../excelJobWorker.js })` после `tsc` (не eval Worker)
 
 **DoD:** перечисленные ветки зелёные в `test:run`; Phase 5.0 не стартовать до закрытия 4.1.
 

@@ -20,6 +20,18 @@ describe('salesMath', () => {
     });
   });
 
+  it('treats null gaps in stock sequence as zero sales', () => {
+    expect(computeSalesFromStockSequence([100, null, 70])).toEqual([
+      { sales: 0, isDeliveryDay: false },
+      { sales: 0, isDeliveryDay: false },
+      { sales: 0, isDeliveryDay: false },
+    ]);
+    expect(computeSalesFromStockSequence([null, 50])).toEqual([
+      { sales: 0, isDeliveryDay: false },
+      { sales: 0, isDeliveryDay: false },
+    ]);
+  });
+
   it('applies recount days and revenue', () => {
     const day = new Date('2026-07-14T00:00:00.000Z');
     expect(applyRecountDayToSales(100, day, new Set(['2026-07-14']))).toBe(0);
@@ -46,5 +58,30 @@ describe('salesMath', () => {
         date: day,
       }),
     ).toEqual({ salesPcs: 30, salesUah: 300, isDeliveryDay: false });
+  });
+
+  it('persisted day sales applies recountDays', () => {
+    const day = new Date('2026-07-15T00:00:00.000Z');
+    expect(
+      computePersistedDaySales({
+        prevStockRaw: 100,
+        currStockRaw: 70,
+        currPriceRaw: 10,
+        date: day,
+        recountDays: new Set(['2026-07-15']),
+      }),
+    ).toEqual({ salesPcs: 0, salesUah: 0, isDeliveryDay: false });
+  });
+
+  it('persisted day sales: delivery day zeros sales', () => {
+    const day = new Date('2026-07-15T00:00:00.000Z');
+    expect(
+      computePersistedDaySales({
+        prevStockRaw: 50,
+        currStockRaw: 120,
+        currPriceRaw: 10,
+        date: day,
+      }),
+    ).toEqual({ salesPcs: 0, salesUah: 0, isDeliveryDay: true });
   });
 });

@@ -1,0 +1,11 @@
+---
+description: Always run Prettier on edited files before finishing a change
+alwaysApply: true
+---
+
+# Format
+
+- After creating or editing files, run Prettier **write** on those paths before considering the task done (do not wait for the user to hit CI).
+- Prefer scoped write: `npx prettier --write <paths…>` for touched files; use `npm run format` only when many files changed.
+- Before handing off a change that touches tracked sources/docs, ensure `npm run format:check` would pass (re-run write if it fails).
+- Do not skip formatting for markdown/docs — they are in the Prettier set and fail `ci` / `format:check`.

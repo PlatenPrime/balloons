@@ -68,4 +68,17 @@ Independent from `sliceJobs` (separate FIFO pump).
 
 ## Tests
 
-`salesMath.test.ts` + `reporting.test.ts`: manual rollup parity, coalesce bound, hook→pie, excel ready buffer, worker_threads signal, independent scheduling vs `sliceJobs`.
+Phase 4 smoke: `reporting.test.ts` (rollup parity, coalesce bound, hook→pie, excel ready, eval worker signal, independent vs `sliceJobs`).
+
+Phase 4.1 gap coverage:
+
+| File                                      | Focus                                                                  |
+| ----------------------------------------- | ---------------------------------------------------------------------- |
+| `salesMath.test.ts`                       | null gaps, delivery, recount on persist                                |
+| `coalescePoints.test.ts`                  | `-1`/gaps forward-fill carry                                           |
+| `materialize.test.ts`                     | multi-prod buckets, empty-day clear, date-range backfill               |
+| `scheduleAfterSliceStockMutation.test.ts` | trailing dirty re-run, flush to idle                                   |
+| `aggregates.test.ts`                      | all `report*` branches (incl. `skugrIds`, `excludeKonks`, selection)   |
+| `excel/excel.builders.test.ts`            | `sku-konk-sales`, `sku-skugr-stock`, `sku-selection-sales` sheet smoke |
+| `excel/excelJobs.test.ts`                 | cancel queued/running, failed → `failed`, `getFile` only when `ready`  |
+| `excel/excelJobWorker.test.ts`            | compiled `dist/excel/excelJobWorker.js` via `workerUrl`                |
