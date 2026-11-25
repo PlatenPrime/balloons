@@ -1,44 +1,57 @@
 # `@balloons/browser`
 
-HTML parsers + fixture pack loader. Live HTTP is off; CI uses disk packs only.
+HTML parsers, multi-step fixture pipelines, and `fetchKonkPageData`. Live HTTP is off; CI uses disk packs only.
 
-## Parsers
+## Universal entry
 
-| API                         | Result                                |
-| --------------------------- | ------------------------------------- |
-| `parseSkuPage(html, ctx)`   | `{ stock, price, packSize? }`         |
-| `parseSkugrPage(html, ctx)` | `{ products: { productId, url? }[] }` |
+```ts
+fetchKonkPageData(
+  { konk, url, type: 'sku' | 'skugr' },
+  { fixturesRoot },
+): Promise<SkuPageData | SkugrPageData>
+```
 
-`ParseContext`: `{ konk, url?, productId? }`.
+**`SkuPageData`:** `{ productId?, artikul?, title?, stock, price, packSize? }`  
+**`SkugrPageData`:** `{ products: { productId, url?, title? }[] }`
 
-Dispatch is by `konk` via `getSkuParser` / `getSkugrParser`. Unknown konk throws.
+Sentinel: unavailable → `stock/price = -1`; intentional OOS → `stock: 0` with a price when available.
 
-Registered now:
+## Parsers (pure HTML)
 
-| konk      | Notes                                                                                   |
-| --------- | --------------------------------------------------------------------------------------- |
-| `_sample` | Stub HTML: `[data-stock]` / `[data-price]`, `[data-product-id]` (+ optional `data-url`) |
+| API                         | Result          |
+| --------------------------- | --------------- |
+| `parseSkuPage(html, ctx)`   | `SkuPageData`   |
+| `parseSkugrPage(html, ctx)` | `SkugrPageData` |
 
-New konk = register parsers + add `fixtures/pages/<konk>/` pack (no runner copy-paste).
+`ParseContext`: `{ konk, url?, productId? }`. Dispatch via `getSkuParser` / `getSkugrParser`.
+
+Registered konk: `_sample`, `air`, `balun`, `dojdevik`, `yumin`, `sharte`, `perfect`, `svbum`, `partymall`.  
+Never: `yumi` (deprecated), `sharik` / btrade.
+
+For cart/AJAX konk (`balun`, `dojdevik`, `sharte`, `perfect`) the HTML registry path is incomplete; use `fetchKonkPageData`.
+
+## Black-box pipeline
+
+- `Stage` + `runPipeline` — ordered units with `StageError { konk, stage, reason }`
+- `HttpLike` — narrow get/post used by stages
+- `createFixtureTransport({ konk, packDir, slot })` — `fetchHtml` → slot HTML; other `stageKey` → `meta.responses[stageKey]` files (`*.fail.*` → status 500)
+
+Prom cart (`balun`/`dojdevik`): `fetchHtml` → CSRF → `addToCart` → `clampQty` → normalize.  
+Sharte: `fetchHtml` → addCart JSON / HTML fallback.  
+Perfect: data-product → OOS HTML → cart JSON.
 
 ## Fixture pack loader
 
-`loadFixturePack(fixturesRoot, konk)`:
-
-1. Reads `manifest.json` through `parseFixtureManifest` (`@balloons/domain`)
-2. Loads each slot `file` as HTML from disk
-
-Helpers: `findSlotById`, `findSlotByUrl`.
+`loadFixturePack(fixturesRoot, konk)` reads `manifest.json` + slot files. Helpers: `findSlotById`, `findSlotByUrl`.
 
 ## `FixturePageSource`
 
-`createFixturePageSource({ fixturesRoot })` implements `PageSource`:
-
-- `getSkuPageHtml(konk, url)` — match `sku-page` by `meta.url`, else fall back to slot id
-- `getSkugrPageHtml(konk, url)` — same for `skugr-page`
-
-No network I/O.
+`createFixturePageSource({ fixturesRoot })` implements `PageSource` (HTML only). No network I/O.
 
 ## Golden tests
 
-`packages/browser/src/golden.test.ts` loads `_sample`, runs parsers, asserts deep-equal to each slot `expected`. See [fixtures.md](fixtures.md).
+`golden.test.ts` runs `fetchKonkPageData` against every slotted `expected` for all packs. See [fixtures.md](fixtures.md).
+
+## Policy
+
+Comparison is peer konk only. Do not add sharik/`product_rests` or warehouse baselines.

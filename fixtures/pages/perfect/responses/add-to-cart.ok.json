@@ -1,0 +1,13 @@
+{
+  "success": true,
+  "cart": {
+    "products": [
+      {
+        "id_product": 10,
+        "stock_quantity": 5,
+        "price_without_reduction": 40,
+        "name": "Куля (10 шт)"
+      }
+    ]
+  }
+}

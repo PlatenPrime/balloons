@@ -4,14 +4,14 @@ Types, ports, `sliceDate`, `-1` helpers, scrape profiles, pack-flip detect, and 
 
 ## Types
 
-| Type                   | Role                                                      |
-| ---------------------- | --------------------------------------------------------- |
-| `Konk` / `Prod`        | Competitor / manufacturer                                 |
-| `Sku` / `Skugr`        | Card + group (`skuIds: string[]`)                         |
-| `SlicePoint`           | `{ stock, price }` for one day                            |
-| `SliceDayMeta`         | Day-run observability (rotation + stats)                  |
-| `StockBand`            | Saved anomalous stock range                               |
-| `ManufacturerDaySales` | Rollup `{ konkName, date, prodName, salesPcs, salesUah }` |
+| Type                   | Role                                                                  |
+| ---------------------- | --------------------------------------------------------------------- |
+| `Konk` / `Prod`        | Competitor / manufacturer                                             |
+| `Sku` / `Skugr`        | Card + group (`skuIds: string[]`); no `btradeAnalog` — peer konk only |
+| `SlicePoint`           | `{ stock, price }` for one day                                        |
+| `SliceDayMeta`         | Day-run observability (rotation + stats)                              |
+| `StockBand`            | Saved anomalous stock range                                           |
+| `ManufacturerDaySales` | Rollup `{ konkName, date, prodName, salesPcs, salesUah }`             |
 
 Ids are plain strings (sandbox-friendly; not ObjectId).
 
@@ -52,4 +52,4 @@ Pure helpers: `detectInversePackFlip`, `detectPriceOnlyPackFlip`, `decidePackFli
 
 ## Fixtures
 
-`parseFixtureManifest` / `fixtureManifestSchema` validate `fixtures/pages/<konk>/manifest.json`. See [fixtures.md](fixtures.md).
+`parseFixtureManifest` / `fixtureManifestSchema` validate `fixtures/pages/<konk>/manifest.json` (SKU expected may include `artikul`/`title`/`productId`; `meta.responses` for cart mocks). See [fixtures.md](fixtures.md).

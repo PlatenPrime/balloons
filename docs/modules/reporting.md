@@ -39,7 +39,7 @@ Read-path Excel/series may forward-fill via `coalesceSlicePointsAlongDates` (`-1
 
 ## JSON aggregates
 
-Competitor-only (no Btrade). Library functions close to wh CI shapes:
+Peer konk comparison only (never vs btrade/sharik/warehouse). Library functions close to wh CI shapes:
 
 | Function                                                  | Role                 |
 | --------------------------------------------------------- | -------------------- |

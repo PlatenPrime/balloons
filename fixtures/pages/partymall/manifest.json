@@ -1,0 +1,62 @@
+{
+  "konk": "partymall",
+  "slots": [
+    {
+      "id": "sku-page",
+      "file": "sku-page.html",
+      "meta": {
+        "url": "https://partymall.example/p/1"
+      },
+      "expected": {
+        "stock": 120,
+        "price": 3,
+        "title": "Куля PM",
+        "artikul": "PM-1",
+        "packSize": 10
+      }
+    },
+    {
+      "id": "sku-oos",
+      "file": "sku-oos.html",
+      "meta": {
+        "url": "https://partymall.example/p/oos"
+      },
+      "expected": {
+        "stock": 0,
+        "price": 30,
+        "title": "Куля PM",
+        "artikul": "PM-1"
+      }
+    },
+    {
+      "id": "sku-pack",
+      "file": "sku-pack.html",
+      "meta": {
+        "url": "https://partymall.example/p/pack"
+      },
+      "expected": {
+        "stock": 20,
+        "price": 8,
+        "title": "Куля pack",
+        "artikul": "PM-2",
+        "packSize": 5
+      }
+    },
+    {
+      "id": "skugr-page",
+      "file": "skugr-page.html",
+      "meta": {
+        "url": "https://partymall.example/g/1"
+      },
+      "expected": {
+        "products": [
+          {
+            "productId": "701",
+            "url": "https://partymall.example/701",
+            "title": "PM A"
+          }
+        ]
+      }
+    }
+  ]
+}

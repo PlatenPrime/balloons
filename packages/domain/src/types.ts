@@ -24,7 +24,6 @@ export type Sku = {
   /** Canonical key: `{konkNameLower}-{rawProductId}`. */
   productId: string;
   artikul: string;
-  btradeAnalog: string;
   title: string;
   url: string;
   imageUrl: string;

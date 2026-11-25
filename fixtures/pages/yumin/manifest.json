@@ -1,0 +1,68 @@
+{
+  "konk": "yumin",
+  "slots": [
+    {
+      "id": "sku-page",
+      "file": "sku-page.html",
+      "meta": {
+        "url": "https://yumi.market/p/1"
+      },
+      "expected": {
+        "stock": 100,
+        "price": 1.894,
+        "title": "Куля (10 шт)",
+        "artikul": "YM-10",
+        "packSize": 10
+      }
+    },
+    {
+      "id": "sku-oos",
+      "file": "sku-oos.html",
+      "meta": {
+        "url": "https://yumi.market/p/oos"
+      },
+      "expected": {
+        "stock": 0,
+        "price": 1.894,
+        "title": "Куля (10 шт)",
+        "artikul": "YM-10",
+        "packSize": 10
+      }
+    },
+    {
+      "id": "sku-pack",
+      "file": "sku-pack.html",
+      "meta": {
+        "url": "https://yumi.market/p/pack"
+      },
+      "expected": {
+        "stock": 25,
+        "price": 4,
+        "title": "Набір (5 шт)",
+        "artikul": "YM-5",
+        "packSize": 5
+      }
+    },
+    {
+      "id": "skugr-page",
+      "file": "skugr-page.html",
+      "meta": {
+        "url": "https://yumi.market/api/products"
+      },
+      "expected": {
+        "products": [
+          {
+            "productId": "11",
+            "url": "https://yumi.market/item-11",
+            "title": "Item 11"
+          },
+          {
+            "productId": "12",
+            "url": "https://yumi.market/item-12",
+            "title": "Item 12"
+          }
+        ]
+      }
+    }
+  ]
+}

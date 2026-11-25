@@ -4,6 +4,8 @@ const fixtureSlotMetaSchema = z
   .object({
     url: z.string().min(1).optional(),
     productId: z.string().min(1).optional(),
+    /** Relative paths under pack dir, keyed by pipeline stage id. */
+    responses: z.record(z.string(), z.string().min(1)).optional(),
   })
   .passthrough();
 
@@ -12,6 +14,9 @@ const skuPageExpectedSchema = z
     stock: z.number(),
     price: z.number(),
     packSize: z.number().optional(),
+    productId: z.string().min(1).optional(),
+    artikul: z.string().min(1).optional(),
+    title: z.string().min(1).optional(),
   })
   .passthrough();
 
@@ -21,6 +26,7 @@ const skugrPageExpectedSchema = z
       z.object({
         productId: z.string().min(1),
         url: z.string().min(1).optional(),
+        title: z.string().min(1).optional(),
       }),
     ),
   })

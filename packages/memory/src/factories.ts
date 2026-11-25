@@ -70,7 +70,6 @@ async function seedWorld(input: SeedWorldInput): Promise<SeededWorld> {
     prodName,
     productId,
     artikul: input.sku?.artikul ?? 'A1',
-    btradeAnalog: input.sku?.btradeAnalog ?? '',
     title: input.sku?.title ?? 'Sample SKU',
     url: input.sku?.url ?? 'https://example.com/product/1',
     imageUrl: input.sku?.imageUrl ?? '',

@@ -11,3 +11,4 @@ alwaysApply: true
 - Monorepo: `apps/*` (api, later fronts/extension), `packages/*` (domain, memory, browser, …), `fixtures/pages/<konk>/`.
 - One API process; two fronts later (`web-slices`, `web-analytics`).
 - Follow `docs/ROADMAP.md` phase order; do not skip phases. Update checkboxes when a phase DoD is met.
+- Comparison is **peer konk only** (konk↔konk / selected competitor SKUs). Never use sharik, btrade, warehouse, or `btradeAnalog` as a baseline. Do not add sharik/`product_rests` or yumi pipelines.

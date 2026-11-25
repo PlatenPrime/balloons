@@ -267,7 +267,6 @@ describe('slice-engine DoD', () => {
       prodName: world.prod.name,
       productId: '_sample-P2',
       artikul: 'A2',
-      btradeAnalog: '',
       title: 'SKU 2',
       url: 'https://example.com/product/2',
       imageUrl: '',

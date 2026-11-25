@@ -1,0 +1,12 @@
+{
+  "data": {
+    "cartAddProduct": {
+      "__typename": "CartAddProductSuccess",
+      "self": {
+        "cartList": {
+          "carts": [{ "id": "cart-1", "items": [{ "price": { "unit": { "selling": "12.50" } } }] }]
+        }
+      }
+    }
+  }
+}

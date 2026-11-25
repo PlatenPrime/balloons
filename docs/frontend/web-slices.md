@@ -27,7 +27,7 @@ CRUD каталога живёт здесь; analytics только читает
 | `/stock-bands/:id` | Detail + discover + batch-correct                    |
 | `/jobs`            | Статус `sliceJobs` (или встроено в slices header)    |
 
-Исключить из MVP: warehouse, btrade-slices, grabo (см. backlog ROADMAP).
+Исключить: warehouse, btrade/sharik baseline, grabo (rejected / never). Comparison later is peer konk only.
 
 ## Flows
 

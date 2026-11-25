@@ -1,0 +1,63 @@
+{
+  "konk": "air",
+  "slots": [
+    {
+      "id": "sku-page",
+      "file": "sku-page.html",
+      "meta": {
+        "url": "https://air.example/product/1",
+        "productId": "air-1"
+      },
+      "expected": {
+        "stock": 3,
+        "price": 100.5,
+        "artikul": "AIR-1"
+      }
+    },
+    {
+      "id": "sku-oos",
+      "file": "sku-oos.html",
+      "meta": {
+        "url": "https://air.example/product/oos"
+      },
+      "expected": {
+        "stock": 0,
+        "price": 100.5,
+        "artikul": "AIR-1"
+      }
+    },
+    {
+      "id": "sku-discount",
+      "file": "sku-discount.html",
+      "meta": {
+        "url": "https://air.example/product/sale"
+      },
+      "expected": {
+        "stock": 2,
+        "price": 80,
+        "artikul": "AIR-2"
+      }
+    },
+    {
+      "id": "skugr-page",
+      "file": "skugr-page.html",
+      "meta": {
+        "url": "https://air.example/group/1"
+      },
+      "expected": {
+        "products": [
+          {
+            "productId": "101",
+            "url": "https://air.example/p/101",
+            "title": "Ball A"
+          },
+          {
+            "productId": "102",
+            "url": "https://air.example/p/102",
+            "title": "Ball B"
+          }
+        ]
+      }
+    }
+  ]
+}

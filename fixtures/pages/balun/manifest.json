@@ -1,0 +1,58 @@
+{
+  "konk": "balun",
+  "slots": [
+    {
+      "id": "sku-page",
+      "file": "sku-page.html",
+      "meta": {
+        "url": "https://balun.example/p123/",
+        "productId": "123",
+        "responses": {
+          "addToCart": "responses/add-to-cart.ok.json",
+          "clampQty": "responses/clamp-qty.ok.json"
+        }
+      },
+      "expected": {
+        "stock": 7,
+        "price": 12.5,
+        "artikul": "BL-01"
+      }
+    },
+    {
+      "id": "sku-oos",
+      "file": "sku-oos.html",
+      "meta": {
+        "url": "https://balun.example/p124/",
+        "responses": {
+          "addToCart": "responses/add-to-cart.not-orderable.json"
+        }
+      },
+      "expected": {
+        "stock": 0,
+        "price": 12.5,
+        "artikul": "BL-01"
+      }
+    },
+    {
+      "id": "skugr-page",
+      "file": "skugr-page.html",
+      "meta": {
+        "url": "https://balun.example/group/1"
+      },
+      "expected": {
+        "products": [
+          {
+            "productId": "201",
+            "url": "https://balun.example/p201",
+            "title": "Balun A"
+          },
+          {
+            "productId": "202",
+            "url": "https://balun.example/p202",
+            "title": "Balun B OOS"
+          }
+        ]
+      }
+    }
+  ]
+}

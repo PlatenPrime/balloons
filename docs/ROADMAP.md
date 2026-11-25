@@ -107,7 +107,7 @@ onSliceStockMutated({ konk, day, ... }) — хук после записи то�
 
 ### 2.5 Frontend surface
 
-Инвентарь экранов до cutover = CI-паритет с `btw-wh` **без** склада / grabo / btrade. Детали маршрутов — в `docs/frontend/*`.
+Инвентарь экранов до cutover = CI-паритет с `btw-wh` **без** склада / grabo / btrade / sharik. Comparison = **peer konk only** (konk↔konk / selected SKUs), never vs btrade/sharik. Детали маршрутов — в `docs/frontend/*`.
 
 #### `apps/web-slices` (ops)
 
@@ -120,7 +120,7 @@ onSliceStockMutated({ konk, day, ... }) — хук после записи то�
 | Pack-flips / band-spike / bands | Discover → preview/apply; stock-bands CRUD + batch-correct                     |
 | Client-ingest                   | Panel на konk (generic); bridge с extension                                    |
 
-Исключить из MVP: warehouse, btrade-slices, grabo (backlog).
+Исключить из MVP и навсегда: warehouse, btrade/sharik baseline, grabo. `yumi` deprecated — не портировать.
 
 #### `apps/web-analytics` (reports)
 
@@ -154,24 +154,26 @@ Chrome MV3: capture HTML → balloons API (generic konk), JWT/bridge из web-sl
       "id": "sku-page",
       "file": "sku-page.html",
       "meta": { "url": "https://example/product/1", "productId": "P1" },
-      "expected": { "stock": 10, "price": 99.5 }
+      "expected": { "stock": 10, "price": 99.5, "artikul": "A1" }
     },
     {
       "id": "skugr-page",
       "file": "skugr-page.html",
       "meta": { "url": "https://example/group/1" },
-      "expected": { "products": [{ "productId": "P1", "url": "..." }] }
+      "expected": { "products": [{ "productId": "P1", "url": "...", "title": "..." }] }
     }
   ]
 }
 ```
 
+Cart/AJAX konk may set `meta.responses` → companion JSON under the pack.
+
 ### 3.2 Обязательные слоты (минимум)
 
-| Slot id      | Назначение                                          |
-| ------------ | --------------------------------------------------- |
-| `sku-page`   | Карточка → `{ stock, price }` (+ optional packSize) |
-| `skugr-page` | Листинг группы → список product refs                |
+| Slot id      | Назначение                                                                 |
+| ------------ | -------------------------------------------------------------------------- |
+| `sku-page`   | Карточка → `{ stock, price, artikul?, title?, productId?, packSize? }`     |
+| `skugr-page` | Листинг группы → список product refs (`productId`, optional `url`/`title`) |
 
 ### 3.3 Расширяемые слоты
 
@@ -251,14 +253,15 @@ Chrome MV3: capture HTML → balloons API (generic konk), JWT/bridge из web-sl
 - [x] Интерфейс `parseSkugrPage(html, ctx) → products[]`
 - [x] Registry по `konk`
 - [x] `FixturePageSource` читает pack с диска
-- [ ] Подключение реальных packs по мере поставки
-- [x] Golden tests: `expected` ↔ parser
+- [x] Подключение реальных packs: `air`, `balun`, `dojdevik`, `yumin`, `sharte`, `perfect`, `svbum`, `partymall` (+ `_sample`)
+- [x] `fetchKonkPageData({ konk, url, type })` + FixtureTransport / StageError black-box stages
+- [x] Golden tests: `expected` ↔ `fetchKonkPageData` / parsers
 - [x] Порт сложной логики из wh осознанно (не слепой copy)
 - [x] `docs/modules/browser.md`
 
 **DoD:** для каждого поставленного konk зелёные golden-тесты на `sku-page` (и `skugr-page`, если слот есть). Live HTTP выключен.
 
-**Блокер:** HTML-наборы конкурентов. До них — только `_sample` / синтетика.
+**Rejected в packs:** `yumi` (deprecated), `sharik` / btrade baseline.
 
 ---
 
@@ -440,27 +443,26 @@ Chrome MV3: capture HTML → balloons API (generic konk), JWT/bridge из web-sl
 
 ## 6. Карта функционала wh → balloons
 
-| Область wh                          | Фаза balloons                  |
-| ----------------------------------- | ------------------------------ |
-| slices config/utils                 | 1–3                            |
-| browser parsers / stock             | 2–3                            |
-| sku-slices cron/run/day-meta/months | 3 (memory) + 5.0/5.2 (HTTP/UI) |
-| slice-compensation                  | 3 + 5.2                        |
-| sku-stock-bands + band-spike        | 3 + 5.2                        |
-| client air ingest → generic         | 3 + 5.0/5.2/5.4                |
-| apitasks slice kinds                | 3 + 5.0/5.2 (`sliceJobs`)      |
-| sku-reporting rollup                | 4 + 4.1 (test gap)             |
-| sku-sales/chart reports             | 4 + 4.1 + 5.0/5.3              |
-| excel-jobs (sku kinds only)         | 4 + 4.1 + 5.0/5.3              |
-| btrade-slices                       | после 5 (backlog)              |
-| skugrs fill / grabo sync            | backlog                        |
-| warehouse excel/apitasks            | **никогда** в balloons         |
+| Область wh                           | Фаза balloons                  |
+| ------------------------------------ | ------------------------------ |
+| slices config/utils                  | 1–3                            |
+| browser parsers / stock              | 2–3                            |
+| sku-slices cron/run/day-meta/months  | 3 (memory) + 5.0/5.2 (HTTP/UI) |
+| slice-compensation                   | 3 + 5.2                        |
+| sku-stock-bands + band-spike         | 3 + 5.2                        |
+| client air ingest → generic          | 3 + 5.0/5.2/5.4                |
+| apitasks slice kinds                 | 3 + 5.0/5.2 (`sliceJobs`)      |
+| sku-reporting rollup                 | 4 + 4.1 (test gap)             |
+| sku-sales/chart reports              | 4 + 4.1 + 5.0/5.3              |
+| excel-jobs (sku kinds only)          | 4 + 4.1 + 5.0/5.3              |
+| btrade-slices / sharik product_rests | **rejected** — peer konk only  |
+| skugrs fill / grabo sync             | backlog                        |
+| warehouse excel/apitasks             | **никогда** в balloons         |
 
 ---
 
 ## 7. Backlog (после MVP фаз 0–5)
 
-- [ ] Btrade / sharik `product_rests` pipeline
 - [ ] Rotation buckets per konk
 - [ ] TG notifications (мок → optional live)
 - [ ] Skugr fill client channel

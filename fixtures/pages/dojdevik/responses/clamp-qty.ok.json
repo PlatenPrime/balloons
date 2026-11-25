@@ -1,0 +1,12 @@
+{
+  "data": {
+    "cartChangeProductQuantity": {
+      "__typename": "RequestedQuantityRecalculatedType",
+      "reason": "EXCEEDS_AMOUNT_OF_PRODUCT_IN_STOCK",
+      "recalculatedQuantity": 2,
+      "self": {
+        "cartList": { "cart": { "items": [{ "price": { "unit": { "selling": "60.00" } } }] } }
+      }
+    }
+  }
+}
