@@ -1,36 +1,38 @@
 # API
 
 Приложение: `apps/api` (один Express-процесс: срезы + отчёты + jobs).  
-Phase **5.0** — HTTP surface на memory/engine/reporting. Детали роутов добавлять сюда по мере реализации.
+Phase **5.0** — HTTP surface на memory/engine/reporting. Typed client: `@balloons/web-api-client`.
 
 Фронты: [../frontend/README.md](../frontend/README.md). Cutover только после DoD Phase 5 — [../ROADMAP.md](../ROADMAP.md).
 
 ## Уже есть
 
-| Method | Path      | Notes                    |
-| ------ | --------- | ------------------------ |
-| `GET`  | `/health` | `{ ok: true }` (Phase 0) |
+| Method | Path      | Auth | Notes          |
+| ------ | --------- | ---- | -------------- |
+| `GET`  | `/health` | no   | `{ ok: true }` |
 
-## Группы роутов (Phase 5.0)
+Детали по группам:
 
-| Group              | Назначение                                                                          | Consumers                                       |
-| ------------------ | ----------------------------------------------------------------------------------- | ----------------------------------------------- |
-| Auth               | Login / JWT; in-memory users                                                        | оба web, extension                              |
-| Catalog            | Konk / Prod / Sku / Skugr read + минимальный write для ops                          | web-slices (CRUD), web-analytics (read filters) |
-| Slices             | Day-meta, points, run, compensation, post-corrections, client-ingest pending/ingest | web-slices, extension                           |
-| Slice jobs         | create / poll / cancel (`sliceJobs`)                                                | web-slices                                      |
-| Corrections extras | Pack-flips, band-spike, stock-bands CRUD + discover/batch-correct                   | web-slices                                      |
-| Reports            | JSON sales / stock / statistics / comparison aggregates                             | web-analytics                                   |
-| Excel jobs         | create / poll / download (CI kinds only)                                            | web-analytics                                   |
-| Browser debug      | Fixture/parser debug helpers (local)                                                | web-slices (optional)                           |
+- [auth.md](./auth.md)
+- [catalog.md](./catalog.md)
+- [slices.md](./slices.md)
+- [slice-jobs.md](./slice-jobs.md)
+- [corrections.md](./corrections.md)
+- [reports.md](./reports.md)
+- [excel-jobs.md](./excel-jobs.md)
+- [browser-debug.md](./browser-debug.md)
 
 ## Cross-cutting
 
-- **CORS:** origins `web-slices` и `web-analytics` (типично `http://localhost:5173`, `http://localhost:5174`).
-- **Auth:** JWT; те же credentials для обоих фронтов.
-- **Persist:** in-memory до Phase 7; без Mongo на 0–6.
-- **Client:** `packages/web-api-client` — typed fetch + Zod DTO.
+- **CORS:** `http://localhost:5173` (web-slices), `http://localhost:5174` (web-analytics); override via `WEB_SLICES_ORIGIN` / `WEB_ANALYTICS_ORIGIN`.
+- **Auth:** JWT HS256; in-memory users (`AUTH_USERNAME` / `AUTH_PASSWORD`).
+- **Persist:** in-memory + fixture `PageSource` до Phase 7; без Mongo.
+- **Client:** `packages/web-api-client` — Zod DTO + `createWebApiClient`.
 
-## Документы по роутам
+## Dev
 
-Добавлять файлы вида `docs/api/<group>.md` вместе с реализацией роутера (правило docs-with-code).
+```bash
+npm run dev:api
+```
+
+Defaults: port `3000`, user `admin` / `admin`.

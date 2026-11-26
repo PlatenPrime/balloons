@@ -12,6 +12,7 @@ export default defineConfig({
       '@balloons/browser': path.join(root, 'packages/browser/src/index.ts'),
       '@balloons/slice-engine': path.join(root, 'packages/slice-engine/src/index.ts'),
       '@balloons/reporting': path.join(root, 'packages/reporting/src/index.ts'),
+      '@balloons/web-api-client': path.join(root, 'packages/web-api-client/src/index.ts'),
     },
   },
   test: {

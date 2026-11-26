@@ -11,10 +11,19 @@
     "test": "vitest run --config ../../vitest.config.ts"
   },
   "dependencies": {
+    "@balloons/browser": "*",
+    "@balloons/domain": "*",
+    "@balloons/memory": "*",
+    "@balloons/reporting": "*",
+    "@balloons/slice-engine": "*",
+    "@balloons/web-api-client": "*",
+    "cors": "^2.8.5",
     "express": "^5.1.0",
+    "jose": "^6.1.0",
     "zod": "^4.1.12"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.5",
     "tsx": "^4.20.6"
   }

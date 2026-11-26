@@ -340,12 +340,12 @@ Cart/AJAX konk may set `meta.responses` → companion JSON under the pack.
 
 **Сделать:**
 
-- [ ] JWT auth + in-memory users
-- [ ] CORS под origins `web-slices` и `web-analytics`
-- [ ] Routers: catalog, slices (day/run/corrections/ingest), sliceJobs, stock-bands / pack-flips / band-spike, reports, excel-jobs, browser-debug
-- [ ] `packages/web-api-client` (typed client + Zod DTO)
-- [ ] API integration smoke (supertest)
-- [ ] `docs/api/*`
+- [x] JWT auth + in-memory users
+- [x] CORS под origins `web-slices` и `web-analytics`
+- [x] Routers: catalog, slices (day/run/corrections/ingest), sliceJobs, stock-bands / pack-flips / band-spike, reports, excel-jobs, browser-debug
+- [x] `packages/web-api-client` (typed client + Zod DTO)
+- [x] API integration smoke (supertest)
+- [x] `docs/api/*`
 
 **DoD:** smoke по ключевым роутам на memory; оба фронт-origin в CORS; Mongo нет.
 
