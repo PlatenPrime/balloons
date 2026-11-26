@@ -23,16 +23,16 @@ Cutover (Phase 7) запрещён, пока не закрыт DoD Phase 5 — �
 ```bash
 npm run dev:api
 npm run dev:web-slices
-# npm run dev:web-analytics  # Phase 5.3
+npm run dev:web-analytics
 ```
 
-| Process       | Port   | Status                                 |
-| ------------- | ------ | -------------------------------------- |
-| api           | `3000` | live (`dev:api`)                       |
-| web-slices    | `5173` | live (`dev:web-slices`, Phase 5.2 ops) |
-| web-analytics | `5174` | planned Phase 5.3                      |
+| Process       | Port   | Status                                        |
+| ------------- | ------ | --------------------------------------------- |
+| api           | `3000` | live (`dev:api`)                              |
+| web-slices    | `5173` | live (`dev:web-slices`, Phase 5.2 ops)        |
+| web-analytics | `5174` | live (`dev:web-analytics`, Phase 5.3 reports) |
 
-Env scaffold: `apps/web-slices/.env.example` → `VITE_API_URL=http://localhost:3000`.  
+Env scaffold: `apps/web-slices/.env.example` / `apps/web-analytics/.env.example` → `VITE_API_URL=http://localhost:3000`.  
 CORS на api разрешает оба frontend origin (`WEB_SLICES_ORIGIN` / `WEB_ANALYTICS_ORIGIN`).
 
 ## Документы

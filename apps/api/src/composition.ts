@@ -9,6 +9,7 @@ import {
 import {
   createExcelJobQueue,
   createMaterializeOnSliceStockMutated,
+  flushScheduledMaterialize,
   type MaterializeDeps,
 } from '@balloons/reporting';
 import { createSliceJobQueue, noOpDelay } from '@balloons/slice-engine';
@@ -58,6 +59,22 @@ export async function createAppDeps(options: CreateAppDepsOptions = {}): Promise
     materializeDeps.catalog = world.catalog;
     materializeDeps.slices = world.slices;
     materializeDeps.sales = world.sales;
+
+    // Demo points after deps are wired so materialize sees real stores (analytics DoD).
+    const demoDays = [
+      { date: new Date('2026-07-14T00:00:00.000Z'), stock: 100, price: 10 },
+      { date: new Date('2026-07-15T00:00:00.000Z'), stock: 70, price: 10 },
+      { date: new Date('2026-07-16T00:00:00.000Z'), stock: 50, price: 10 },
+    ];
+    for (const p of demoDays) {
+      await world.slices.upsertPoint({
+        konkName: world.konk.name,
+        productId: world.sku.productId,
+        date: p.date,
+        point: { stock: p.stock, price: p.price },
+      });
+    }
+    await flushScheduledMaterialize();
   } else {
     materializeDeps.catalog = createInMemoryCatalogStore();
     materializeDeps.sales = createInMemoryManufacturerDaySalesStore();

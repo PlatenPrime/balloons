@@ -17,11 +17,12 @@
     "lint": "eslint .",
     "test": "vitest",
     "test:run": "vitest run",
-    "build": "npm run build -w @balloons/domain && npm run build -w @balloons/memory -w @balloons/browser && npm run build -w @balloons/slice-engine && npm run build -w @balloons/reporting && npm run build -w @balloons/web-api-client && npm run build -w @balloons/api --if-present && npm run build -w @balloons/web-slices --if-present",
-    "typecheck": "npm run typecheck -w @balloons/domain -w @balloons/memory -w @balloons/browser -w @balloons/slice-engine -w @balloons/reporting -w @balloons/web-api-client -w @balloons/api -w @balloons/web-slices",
+    "build": "npm run build -w @balloons/domain && npm run build -w @balloons/memory -w @balloons/browser && npm run build -w @balloons/slice-engine && npm run build -w @balloons/reporting && npm run build -w @balloons/web-api-client && npm run build -w @balloons/api --if-present && npm run build -w @balloons/web-slices --if-present && npm run build -w @balloons/web-analytics --if-present",
+    "typecheck": "npm run typecheck -w @balloons/domain -w @balloons/memory -w @balloons/browser -w @balloons/slice-engine -w @balloons/reporting -w @balloons/web-api-client -w @balloons/api -w @balloons/web-slices -w @balloons/web-analytics",
     "ci": "npm run format:check && npm run lint && npm run build && npm run typecheck && npm run test:run",
     "dev:api": "npm run dev -w @balloons/api",
-    "dev:web-slices": "npm run dev -w @balloons/web-slices"
+    "dev:web-slices": "npm run dev -w @balloons/web-slices",
+    "dev:web-analytics": "npm run dev -w @balloons/web-analytics"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

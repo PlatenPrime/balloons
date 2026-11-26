@@ -384,13 +384,13 @@ Cart/AJAX konk may set `meta.responses` → companion JSON under the pack.
 
 **Сделать:**
 
-- [ ] Vite scaffold `apps/web-analytics` (тот же стек; свой shell)
-- [ ] Sales / stock time series
-- [ ] Statistics (+ prod/skugr drill)
-- [ ] Comparison (konks / selected skus)
-- [ ] Excel order / list / download (CI kinds only)
-- [ ] Root scripts `dev:web-analytics`; app в `build` / CI
-- [ ] `docs/frontend/web-analytics.md`
+- [x] Vite scaffold `apps/web-analytics` (тот же стек; свой shell)
+- [x] Sales / stock time series
+- [x] Statistics (+ prod/skugr drill)
+- [x] Comparison (konks / selected skus)
+- [x] Excel order / list / download (CI kinds only)
+- [x] Root scripts `dev:web-analytics`; app в `build` / CI
+- [x] `docs/frontend/web-analytics.md`
 
 **DoD:** отчёт (хотя бы sales + один excel kind) открывается на memory данных против того же api.
 
