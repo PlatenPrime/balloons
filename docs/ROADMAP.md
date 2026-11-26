@@ -23,17 +23,17 @@
 
 ## 1. Нерушимые правила
 
-| Правило                   | Смысл                                                                                      |
-| ------------------------- | ------------------------------------------------------------------------------------------ |
-| wh-isolation              | Пока не объявлен cutover, `btw-wh-server` не правим «под balloons». Прод-срезы только там. |
-| no-prod-deploy            | balloons не деплоим в прод на ранних фазах.                                                |
-| no-mongo-collections      | На фазах 0–6 **не работаем с Mongo-коллекциями**. Persist = in-memory моки форм моделей.   |
-| fixtures-first            | Парсинг и scrape-pipeline проверяются на **HTML fixture packs** конкурентов.               |
-| one-api-two-fronts        | Один Node API-процесс (срезы+отчёты); два фронта: `web-slices`, `web-analytics`.           |
-| three-part-before-cutover | Phase 7 (cutover) стартует только после DoD Phase 5: api + оба web + extension.            |
-| ci-bar                    | `format:check` + `lint` + `test:run` + `build` на каждый PR; покрытие логики тестами.      |
-| docs-with-code            | Модуль/API/frontend → сразу `docs/modules` / `docs/api` / `docs/frontend`.                 |
-| no-real-telegram-in-tests | Уведомления только моки.                                                                   |
+| Правило                   | Смысл                                                                                               |
+| ------------------------- | --------------------------------------------------------------------------------------------------- |
+| wh-isolation              | Пока не объявлен cutover, `btw-wh-server` не правим «под balloons». Прод-срезы только там.          |
+| no-prod-deploy            | balloons не деплоим в прод на ранних фазах.                                                         |
+| no-mongo-collections      | На фазах 0–6 **не работаем с Mongo-коллекциями**. Persist = in-memory моки форм моделей.            |
+| fixtures-first            | Парсинг и scrape-pipeline проверяются на **HTML fixture packs** конкурентов.                        |
+| one-api-two-fronts        | Один Node API-процесс (срезы+отчёты); два фронта: `web-slices`, `web-analytics`.                    |
+| three-part-before-cutover | Phase 7 (cutover) стартует только после DoD Phase 5: api + оба web + extension.                     |
+| ci-bar                    | `format:check` + `lint` + `typecheck` + `test:run` + `build` на каждый PR; покрытие логики тестами. |
+| docs-with-code            | Модуль/API/frontend → сразу `docs/modules` / `docs/api` / `docs/frontend`.                          |
+| no-real-telegram-in-tests | Уведомления только моки.                                                                            |
 
 ---
 
@@ -192,7 +192,7 @@ Cart/AJAX konk may set `meta.responses` → companion JSON under the pack.
 **API / packages:** Node `>=26`, TypeScript strict, Express 5, Zod, Vitest, Prettier, ESLint.  
 **Front:** Vite + React + TS + TanStack Query + React Router + Zod + react-hook-form; Tailwind + Radix/shadcn-подобные примитивы per-app.  
 **Shared front:** `packages/web-api-client` — typed fetch + Zod DTO для обоих фронтов (и extension при необходимости).  
-**Scripts (root):** `ci` = `format:check && lint && test:run && build`; `dev:api`, `dev:web-slices`, `dev:web-analytics`; `build` включает api и оба фронта.  
+**Scripts (root):** `ci` = `format:check && lint && typecheck && test:run && build`; `typecheck` = editor `tsconfig.json` (src+tests); `build` = `tsconfig.build.json` (emit, без тестов); `dev:api`, `dev:web-slices`, `dev:web-analytics`.  
 **CI:** GitHub Actions, Node 26, `npm ci` → `npm run ci`.  
 **Rules:** `.cursor/rules` — модульность, docs, dto, tests, telegram mocks.
 

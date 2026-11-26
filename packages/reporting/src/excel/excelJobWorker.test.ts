@@ -1,15 +1,47 @@
 import { createSeededWorld } from '@balloons/memory';
+import { execFile } from 'node:child_process';
 import { access } from 'node:fs/promises';
+import { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { createExcelJobQueue } from './excelJobs.js';
 
 const execFileAsync = promisify(execFile);
 const pkgRoot = join(dirname(fileURLToPath(import.meta.url)), '../..');
+const domainRoot = join(pkgRoot, '../domain');
 const workerDist = join(pkgRoot, 'dist/excel/excelJobWorker.js');
+const requireFromPkg = createRequire(join(pkgRoot, 'package.json'));
+const tscBin = requireFromPkg.resolve('typescript/bin/tsc');
+
+async function runTsc(cwd: string): Promise<void> {
+  try {
+    await execFileAsync(process.execPath, [tscBin, '-p', 'tsconfig.build.json'], {
+      cwd,
+      env: process.env,
+    });
+  } catch (err) {
+    const e = err as { stdout?: Buffer | string; stderr?: Buffer | string; message?: string };
+    const stdout = e.stdout?.toString() ?? '';
+    const stderr = e.stderr?.toString() ?? '';
+    throw new Error(
+      `tsc failed in ${cwd}: ${e.message ?? err}\nstdout:\n${stdout}\nstderr:\n${stderr}`,
+    );
+  }
+}
+
+async function ensureWorkerDist(): Promise<void> {
+  try {
+    await access(workerDist);
+    return;
+  } catch {
+    // CI runs test:run before build; worker needs compiled dist + domain types.
+  }
+  await runTsc(domainRoot);
+  await runTsc(pkgRoot);
+  await access(workerDist);
+}
 
 async function waitFor(check: () => boolean, timeoutMs = 15000): Promise<void> {
   const start = Date.now();
@@ -21,16 +53,7 @@ async function waitFor(check: () => boolean, timeoutMs = 15000): Promise<void> {
 
 describe('excelJobWorker (compiled)', () => {
   beforeAll(async () => {
-    try {
-      await access(workerDist);
-    } catch {
-      await execFileAsync(
-        process.platform === 'win32' ? 'npx.cmd' : 'npx',
-        ['tsc', '-p', 'tsconfig.json'],
-        { cwd: pkgRoot },
-      );
-    }
-    await access(workerDist);
+    await ensureWorkerDist();
   }, 60_000);
 
   it('builds via createExcelJobQueue workerUrl to dist excelJobWorker', async () => {

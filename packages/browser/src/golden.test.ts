@@ -66,11 +66,11 @@ describe('golden HTML parsers (non-cart sku + all skugr)', () => {
           continue;
         }
 
-        const ctx = {
+        const ctx: { konk: string; url?: string; productId?: string } = {
           konk: pack.konk,
-          url: slot.meta?.url,
-          productId: typeof slot.meta?.productId === 'string' ? slot.meta.productId : undefined,
         };
+        if (typeof slot.meta?.url === 'string') ctx.url = slot.meta.url;
+        if (typeof slot.meta?.productId === 'string') ctx.productId = slot.meta.productId;
 
         if (isSkugrSlot(slot.id)) {
           expect(parseSkugrPage(slot.html, ctx)).toEqual(slot.expected);

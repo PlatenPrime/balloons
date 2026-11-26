@@ -18,7 +18,8 @@
     "test": "vitest",
     "test:run": "vitest run",
     "build": "npm run build -w @balloons/domain && npm run build -w @balloons/memory -w @balloons/browser && npm run build -w @balloons/slice-engine && npm run build -w @balloons/reporting && npm run build -w @balloons/web-api-client && npm run build -w @balloons/api --if-present",
-    "ci": "npm run format:check && npm run lint && npm run test:run && npm run build",
+    "typecheck": "npm run typecheck -w @balloons/domain -w @balloons/memory -w @balloons/browser -w @balloons/slice-engine -w @balloons/reporting -w @balloons/web-api-client -w @balloons/api",
+    "ci": "npm run format:check && npm run lint && npm run typecheck && npm run test:run && npm run build",
     "dev:api": "npm run dev -w @balloons/api"
   },
   "devDependencies": {

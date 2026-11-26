@@ -81,4 +81,4 @@ Phase 4.1 gap coverage:
 | `aggregates.test.ts`                      | all `report*` branches (incl. `skugrIds`, `excludeKonks`, selection)   |
 | `excel/excel.builders.test.ts`            | `sku-konk-sales`, `sku-skugr-stock`, `sku-selection-sales` sheet smoke |
 | `excel/excelJobs.test.ts`                 | cancel queued/running, failed → `failed`, `getFile` only when `ready`  |
-| `excel/excelJobWorker.test.ts`            | compiled `dist/excel/excelJobWorker.js` via `workerUrl`                |
+| `excel/excelJobWorker.test.ts`            | compiles via `tsconfig.build.json` → `dist/excel/excelJobWorker.js`    |
