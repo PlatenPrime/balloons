@@ -8,12 +8,18 @@ import { Field, TextInput, TextTextarea } from '../../components/ui/Field.js';
 import { TableShell, Td, Th } from '../../components/ui/TableShell.js';
 import { QueryState } from '../../components/QueryState.js';
 import {
-  formatCaptureError,
-  formatCaptureResultMessage,
   formatIngestError,
   formatIngestFailure,
   formatIngestSuccess,
 } from './clientIngestFeedback.js';
+import {
+  buildExtensionCaptureRequest,
+  onCaptureError,
+  onCaptureMutate,
+  onCaptureSettled,
+  onCaptureSuccess,
+  type CaptureMutationUiState,
+} from './captureMutationLifecycle.js';
 import { requestExtensionCapture } from './extensionBridge.js';
 
 const apiBaseUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
@@ -23,8 +29,12 @@ export function ClientIngestPanel({ konkName }: { konkName: string }) {
   const [skuId, setSkuId] = useState('');
   const [sourceUrl, setSourceUrl] = useState('');
   const [html, setHtml] = useState('');
-  const [message, setMessage] = useState<string | null>(null);
-  const [capturingSkuId, setCapturingSkuId] = useState<string | null>(null);
+  const [captureUi, setCaptureUi] = useState<CaptureMutationUiState>({
+    capturingSkuId: null,
+    message: null,
+    shouldInvalidatePending: false,
+  });
+  const [ingestMessage, setIngestMessage] = useState<string | null>(null);
 
   const pendingQuery = useQuery({
     queryKey: ['slices', konkName, 'pending'],
@@ -35,43 +45,48 @@ export function ClientIngestPanel({ konkName }: { konkName: string }) {
     mutationFn: () => api.ingestHtml(konkName, { skuId, sourceUrl, html }),
     onSuccess: (result) => {
       if (result.ok) {
-        setMessage(formatIngestSuccess(result));
+        setIngestMessage(formatIngestSuccess(result));
         setHtml('');
         void queryClient.invalidateQueries({ queryKey: ['slices', konkName] });
       } else {
-        setMessage(formatIngestFailure(result));
+        setIngestMessage(formatIngestFailure(result));
       }
     },
     onError: (err) => {
-      setMessage(err instanceof WebApiClientError ? err.message : formatIngestError(err));
+      setIngestMessage(err instanceof WebApiClientError ? err.message : formatIngestError(err));
     },
   });
 
   const captureMutation = useMutation({
     mutationFn: (item: { skuId: string; sourceUrl: string }) =>
-      requestExtensionCapture({
-        konk: konkName,
-        skuId: item.skuId,
-        sourceUrl: item.sourceUrl,
-        apiBaseUrl,
-      }),
+      requestExtensionCapture(
+        buildExtensionCaptureRequest({
+          konk: konkName,
+          skuId: item.skuId,
+          sourceUrl: item.sourceUrl,
+          apiBaseUrl,
+        }),
+      ),
     onMutate: (item) => {
-      setCapturingSkuId(item.skuId);
-      setMessage(null);
+      setCaptureUi((prev) => onCaptureMutate(prev, item));
+      setIngestMessage(null);
     },
     onSuccess: (result) => {
-      setMessage(formatCaptureResultMessage(result));
+      setCaptureUi((prev) => onCaptureSuccess(prev, result));
       if (result.ok) {
         void queryClient.invalidateQueries({ queryKey: ['slices', konkName] });
       }
     },
     onError: (err) => {
-      setMessage(formatCaptureError(err));
+      setCaptureUi((prev) => onCaptureError(prev, err));
     },
     onSettled: () => {
-      setCapturingSkuId(null);
+      setCaptureUi((prev) => onCaptureSettled(prev));
     },
   });
+
+  const bannerMessage = captureUi.message ?? ingestMessage;
+  const capturingSkuId = captureUi.capturingSkuId;
 
   return (
     <section className="space-y-3 border border-slate-200 bg-white p-4">
@@ -163,7 +178,7 @@ export function ClientIngestPanel({ konkName }: { konkName: string }) {
           {capturingSkuId === skuId ? 'Capturing…' : 'Capture via extension'}
         </Button>
       </div>
-      {message ? <Banner tone="info">{message}</Banner> : null}
+      {bannerMessage ? <Banner tone="info">{bannerMessage}</Banner> : null}
     </section>
   );
 }

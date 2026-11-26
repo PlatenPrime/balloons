@@ -5,37 +5,59 @@ import {
   formatIngestFailure,
   formatIngestSuccess,
 } from './clientIngestFeedback.js';
+import {
+  buildExtensionCaptureRequest,
+  onCaptureError,
+  onCaptureMutate,
+  onCaptureSettled,
+  onCaptureSuccess,
+} from './captureMutationLifecycle.js';
 import { ExtensionBridgeError } from './extensionBridge.js';
 import { BRIDGE_SOURCE } from './extensionProtocol.js';
 
 /**
- * Panel wires TanStack mutations to these formatters (see ClientIngestPanel.tsx).
- * Covers the Capture/ingest feedback branches without mounting React.
+ * ClientIngestPanel wires TanStack captureMutation to captureMutationLifecycle.
+ * These tests exercise that lifecycle + request shaping used by lines 50–74.
  */
-describe('ClientIngestPanel feedback wiring', () => {
-  it('paste-ingest success clears toward success banner text', () => {
+describe('ClientIngestPanel captureMutation lifecycle', () => {
+  it('mutationFn payload is built from konk + pending row + apiBaseUrl', () => {
     expect(
-      formatIngestSuccess({
-        ok: true,
-        status: 'saved',
-        productId: 'air-1',
-        stock: 3,
+      buildExtensionCaptureRequest({
+        konk: 'air',
+        skuId: 'sku-9',
+        sourceUrl: 'https://example.com/product/9',
+        apiBaseUrl: 'http://localhost:3000',
       }),
-    ).toContain('Ingest saved');
+    ).toEqual({
+      konk: 'air',
+      skuId: 'sku-9',
+      sourceUrl: 'https://example.com/product/9',
+      apiBaseUrl: 'http://localhost:3000',
+    });
   });
 
-  it('paste-ingest business failure surfaces code', () => {
-    expect(
-      formatIngestFailure({
-        ok: false,
-        code: 'NOT_SLICED',
-        message: 'sku not in day',
-      }),
-    ).toBe('NOT_SLICED: sku not in day');
-  });
+  it('onMutate → onSuccess(ok) → onSettled tracks capture state and invalidate flag', () => {
+    let state = onCaptureMutate(
+      { capturingSkuId: null, message: null, shouldInvalidatePending: false },
+      { skuId: 'sku-1' },
+    );
+    expect(state.capturingSkuId).toBe('sku-1');
+    expect(state.message).toBeNull();
 
-  it('extension capture success and failure update the same banner channel', () => {
-    expect(
+    state = onCaptureSuccess(state, {
+      source: BRIDGE_SOURCE,
+      type: 'CAPTURE_RESULT',
+      requestId: 'req',
+      ok: true,
+      status: 'saved',
+      productId: 'p',
+      stock: 1,
+      price: 2,
+      konk: 'air',
+      skuId: 'sku-1',
+    });
+    expect(state.shouldInvalidatePending).toBe(true);
+    expect(state.message).toBe(
       formatCaptureResultMessage({
         source: BRIDGE_SOURCE,
         type: 'CAPTURE_RESULT',
@@ -46,12 +68,35 @@ describe('ClientIngestPanel feedback wiring', () => {
         stock: 1,
         price: 2,
         konk: 'air',
-        skuId: 's',
+        skuId: 'sku-1',
       }),
-    ).toMatch(/^Capture saved:/);
+    );
 
-    expect(
+    state = onCaptureSettled(state);
+    expect(state.capturingSkuId).toBeNull();
+    expect(state.message).toMatch(/^Capture saved:/);
+  });
+
+  it('onMutate → onError → onSettled keeps failure banner and clears capturing flag', () => {
+    let state = onCaptureMutate(
+      { capturingSkuId: null, message: 'old', shouldInvalidatePending: false },
+      { skuId: 'sku-2' },
+    );
+    state = onCaptureError(state, new ExtensionBridgeError('NO_TOKEN', 'Log in before capturing'));
+    expect(state.message).toBe(
       formatCaptureError(new ExtensionBridgeError('NO_TOKEN', 'Log in before capturing')),
-    ).toBe('NO_TOKEN: Log in before capturing');
+    );
+    expect(state.shouldInvalidatePending).toBe(false);
+    state = onCaptureSettled(state);
+    expect(state.capturingSkuId).toBeNull();
+  });
+
+  it('still formats paste-ingest banners for the shared panel channel', () => {
+    expect(
+      formatIngestSuccess({ ok: true, status: 'saved', productId: 'air-1', stock: 3 }),
+    ).toContain('Ingest saved');
+    expect(formatIngestFailure({ ok: false, code: 'NOT_SLICED', message: 'sku not in day' })).toBe(
+      'NOT_SLICED: sku not in day',
+    );
   });
 });

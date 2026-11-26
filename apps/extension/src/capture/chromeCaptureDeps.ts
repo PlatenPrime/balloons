@@ -1,33 +1,7 @@
 import { createWebApiClient, WebApiClientError, type WebApiClient } from '@balloons/web-api-client';
 import { readExecuteScriptHtml } from './captureHtmlResult.js';
 import type { CaptureDeps, CaptureIngestResult } from './runCapture.js';
-
-function waitForTabComplete(tabId: number): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const timeout = setTimeout(() => {
-      chrome.tabs.onUpdated.removeListener(listener);
-      reject(new Error(`Tab ${tabId} load timed out`));
-    }, 30_000);
-
-    const listener = (updatedTabId: number, info: { status?: string }) => {
-      if (updatedTabId !== tabId) return;
-      if (info.status === 'complete') {
-        clearTimeout(timeout);
-        chrome.tabs.onUpdated.removeListener(listener);
-        resolve();
-      }
-    };
-
-    chrome.tabs.onUpdated.addListener(listener);
-    void chrome.tabs.get(tabId).then((tab) => {
-      if (tab.status === 'complete') {
-        clearTimeout(timeout);
-        chrome.tabs.onUpdated.removeListener(listener);
-        resolve();
-      }
-    });
-  });
-}
+import { createChromeWaitForTabComplete } from './waitForTabComplete.js';
 
 export function mapIngestClientError(err: unknown): CaptureIngestResult {
   if (err instanceof WebApiClientError) {
@@ -101,7 +75,7 @@ export function createChromeCaptureDeps(opts: ChromeCaptureDepsOptions): Capture
         const tab = await chrome.tabs.create({ url, active: false });
         return tab.id !== undefined ? { id: tab.id } : {};
       }),
-    waitForTabComplete: opts.waitForTabComplete ?? waitForTabComplete,
+    waitForTabComplete: opts.waitForTabComplete ?? createChromeWaitForTabComplete(),
     captureHtml: async (tabId) => {
       const results = await executeScript({
         target: { tabId },
