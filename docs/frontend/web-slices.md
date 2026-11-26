@@ -9,7 +9,32 @@ Phases: **5.1** scaffold → **5.2** ops.
 Человеком управляемые срезы: catalog, день среза, коррекции, bands/pack-flips, client-ingest.  
 CRUD каталога живёт здесь; analytics только читает справочники.
 
-## Маршруты (целевые)
+## Локальный запуск (Phase 5.1+)
+
+```bash
+npm run dev:api
+npm run dev:web-slices
+```
+
+| Process    | Port / env                                               |
+| ---------- | -------------------------------------------------------- |
+| api        | `3000`                                                   |
+| web-slices | `5173` (`VITE_API_URL`, default `http://localhost:3000`) |
+
+Demo login: `admin` / `admin` (JWT в `localStorage`, key `balloons.web-slices.token`).
+
+## Маршруты scaffold (5.1)
+
+| Path      | Назначение                           |
+| --------- | ------------------------------------ |
+| `/login`  | Auth form → `POST /auth/login`       |
+| `/health` | Stub: `GET /health` + `GET /auth/me` |
+| `/konks`  | Stub catalog: `GET /catalog/konks`   |
+| `/`       | Redirect → `/konks`                  |
+
+Protected shell/nav: Health, Konks; остальные ops-ссылки — disabled stubs до 5.2.
+
+## Маршруты (целевые, 5.2)
 
 | Path               | Назначение                                           |
 | ------------------ | ---------------------------------------------------- |
@@ -39,7 +64,8 @@ CRUD каталога живёт здесь; analytics только читает
 ## UI-паттерн
 
 Fetcher → Container → View; фильтры в URL; jobs с poll/toast.  
-Shell/nav только ops (без analytics-разделов).
+Shell/nav только ops (без analytics-разделов).  
+Стек 5.1: Vite + React + TS + TanStack Query + React Router + Tailwind + Zod + react-hook-form (без shadcn — Phase 5.2).
 
 ## DoD
 

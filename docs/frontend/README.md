@@ -18,25 +18,22 @@ Cutover (Phase 7) запрещён, пока не закрыт DoD Phase 5 — �
 
 Ориентир UX — CI-часть `btw-wh/web` (пересборка, не копипаст; без склада).
 
-## Локальный запуск (после Phase 5.x)
-
-Планируемые root scripts:
+## Локальный запуск
 
 ```bash
 npm run dev:api
 npm run dev:web-slices
-npm run dev:web-analytics
+# npm run dev:web-analytics  # Phase 5.3
 ```
 
-Типичные ports (зафиксировать в app `.env` при scaffold):
+| Process       | Port   | Status                             |
+| ------------- | ------ | ---------------------------------- |
+| api           | `3000` | live (`dev:api`)                   |
+| web-slices    | `5173` | live (`dev:web-slices`, Phase 5.1) |
+| web-analytics | `5174` | planned Phase 5.3                  |
 
-| Process       | Port   |
-| ------------- | ------ |
-| api           | `3000` |
-| web-slices    | `5173` |
-| web-analytics | `5174` |
-
-CORS на api должен разрешать оба frontend origin.
+Env scaffold: `apps/web-slices/.env.example` → `VITE_API_URL=http://localhost:3000`.  
+CORS на api разрешает оба frontend origin (`WEB_SLICES_ORIGIN` / `WEB_ANALYTICS_ORIGIN`).
 
 ## Документы
 

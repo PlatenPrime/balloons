@@ -355,11 +355,11 @@ Cart/AJAX konk may set `meta.responses` → companion JSON under the pack.
 
 **Сделать:**
 
-- [ ] Vite + React + TS + TanStack Query + React Router в `apps/web-slices`
-- [ ] Auth (login) + shell/nav
-- [ ] Подключение `web-api-client`
-- [ ] Root scripts `dev:web-slices`; app в `build` / CI
-- [ ] `docs/frontend/web-slices.md` (маршруты scaffold)
+- [x] Vite + React + TS + TanStack Query + React Router в `apps/web-slices`
+- [x] Auth (login) + shell/nav
+- [x] Подключение `web-api-client`
+- [x] Root scripts `dev:web-slices`; app в `build` / CI
+- [x] `docs/frontend/web-slices.md` (маршруты scaffold)
 
 **DoD:** локально login + stub catalog/health page против api.
 
