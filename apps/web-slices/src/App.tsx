@@ -25,7 +25,7 @@ export function App() {
           <Route index element={<Navigate to="/konks" replace />} />
           <Route path="/health" element={<HealthPage />} />
           <Route path="/konks" element={<KonksPage />} />
-          <Route path="/konks/:id" element={<KonkDetailPage />} />
+          <Route path="/konks/:name" element={<KonkDetailPage />} />
           <Route path="/skugrs" element={<SkugrsPage />} />
           <Route path="/skugrs/:id" element={<SkugrDetailPage />} />
           <Route path="/skus" element={<SkusPage />} />

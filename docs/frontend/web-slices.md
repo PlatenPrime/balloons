@@ -31,7 +31,7 @@ Seeded demo konk: `air`. Default day на `/slices`: `2026-07-15T00:00:00.000Z` 
 | `/login`           | Auth (JWT)                                                               |
 | `/health`          | `GET /health` + `GET /auth/me`                                           |
 | `/konks`           | Список + seed                                                            |
-| `/konks/:id`       | Detail + **client-ingest** panel (`pending` / `ingest`)                  |
+| `/konks/:name`     | Detail + **client-ingest** panel (`pending` / `ingest`; API key = name)  |
 | `/skugrs`          | Список + seed; filters `konkName`, `isSliced`                            |
 | `/skugrs/:id`      | Detail                                                                   |
 | `/skus`            | Список + seed; filters `konkName`, `isInvalid`                           |
@@ -51,7 +51,7 @@ Seeded demo konk: `air`. Default day на `/slices`: `2026-07-15T00:00:00.000Z` 
 1. **Day run:** `/slices?konk=air&day=…` → Run slice → poll banner → day-meta / points (invalid filter).
 2. **Compensation / post-corrections:** Compensation = job `compensation.run`; post-correction = ручной `putPoint` на странице slices (отдельного job kind нет).
 3. **Discover → correct:** pack-flips preview/apply; band-spike discover/correct; stock-band discover + `stock-band.batch-correct` job.
-4. **Client-ingest:** pending list на `/konks/:id` → paste HTML → ingest → refresh pending.
+4. **Client-ingest:** pending list на `/konks/:name` → paste HTML → ingest → refresh pending.
 
 ## UI-паттерн
 

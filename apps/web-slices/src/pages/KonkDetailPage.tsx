@@ -6,18 +6,18 @@ import { QueryState } from '../components/QueryState.js';
 import { ClientIngestPanel } from '../features/ingest/ClientIngestPanel.js';
 
 export function KonkDetailPage() {
-  const { id = '' } = useParams();
+  const { name = '' } = useParams();
   const konkQuery = useQuery({
-    queryKey: ['catalog', 'konks', id],
-    queryFn: () => api.getKonk(id),
-    enabled: Boolean(id),
+    queryKey: ['catalog', 'konks', name],
+    queryFn: () => api.getKonk(name),
+    enabled: Boolean(name),
   });
 
   return (
     <div className="space-y-4">
       <PageHeader
-        title={konkQuery.data?.title ?? id}
-        description={`Konk detail · ${id}`}
+        title={konkQuery.data?.title ?? name}
+        description={`Konk detail · ${name}`}
         actions={
           <Link className="text-sm text-slate-600 underline" to="/konks">
             ← Konks
@@ -50,7 +50,7 @@ export function KonkDetailPage() {
         ) : null}
       </QueryState>
 
-      {id ? <ClientIngestPanel konkName={id} /> : null}
+      {name ? <ClientIngestPanel konkName={name} /> : null}
     </div>
   );
 }
