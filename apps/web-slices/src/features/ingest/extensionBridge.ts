@@ -22,6 +22,9 @@ export type RequestExtensionCaptureInput = {
   createRequestId?: () => string;
 };
 
+/** Default wait for extension CAPTURE_RESULT before unlocking Capture UI. */
+export const DEFAULT_EXTENSION_CAPTURE_TIMEOUT_MS = 15_000;
+
 export class ExtensionBridgeError extends Error {
   readonly code: string;
 
@@ -78,7 +81,7 @@ export function requestExtensionCapture(
       window.removeEventListener(type, listener as EventListener);
     });
   const createRequestId = input.createRequestId ?? (() => globalThis.crypto.randomUUID());
-  const timeoutMs = input.timeoutMs ?? 45_000;
+  const timeoutMs = input.timeoutMs ?? DEFAULT_EXTENSION_CAPTURE_TIMEOUT_MS;
   const requestId = createRequestId();
   const targetOrigin = input.targetOrigin ?? defaultTargetOrigin();
   const expectedSource =

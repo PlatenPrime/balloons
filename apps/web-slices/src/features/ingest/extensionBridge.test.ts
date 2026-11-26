@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import {
+  DEFAULT_EXTENSION_CAPTURE_TIMEOUT_MS,
   ExtensionBridgeError,
   requestExtensionCapture,
   resolveExtensionToken,
@@ -32,6 +33,10 @@ describe('requestExtensionCapture', () => {
     expect(resolveExtensionToken(null, () => 'from-session')).toBe('from-session');
     expect(resolveExtensionToken(undefined, () => 'from-session')).toBe('from-session');
     expect(resolveExtensionToken('explicit', () => 'from-session')).toBe('explicit');
+  });
+
+  it('defaults capture timeout to 15s (not a long UI lock)', () => {
+    expect(DEFAULT_EXTENSION_CAPTURE_TIMEOUT_MS).toBe(15_000);
   });
 
   it('posts TOKEN_SYNC + CAPTURE_REQUEST and resolves on matching result', async () => {

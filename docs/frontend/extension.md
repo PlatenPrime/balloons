@@ -48,7 +48,8 @@ npm run build -w @balloons/extension   # или npm run dev:extension (watch)
 | `CAPTURE_REQUEST` | page → extension | `requestId`, `konk`, `skuId`, `sourceUrl`, …    |
 | `CAPTURE_RESULT`  | extension → page | success (`status`, metrics) or `code`/`message` |
 
-web-slices: `features/ingest/extensionBridge.ts` + кнопка **Capture** в `ClientIngestPanel`.
+web-slices: `features/ingest/extensionBridge.ts` + кнопка **Capture** в `ClientIngestPanel`.  
+Bridge timeout default: **15s** (`DEFAULT_EXTENSION_CAPTURE_TIMEOUT_MS`) — после этого Capture UI разблокируется с `TIMEOUT`.
 
 ## Flow
 
