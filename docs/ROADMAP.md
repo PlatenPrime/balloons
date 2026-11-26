@@ -369,12 +369,12 @@ Cart/AJAX konk may set `meta.responses` → companion JSON under the pack.
 
 **Сделать:**
 
-- [ ] Catalog: konks / skugrs / competitor-skus (+ detail)
-- [ ] Day slices status + invalid points; create/poll/cancel `sliceJobs`
-- [ ] Compensation + post-corrections
-- [ ] Pack-flips, band-spike, stock-bands (+ discover/batch-correct)
-- [ ] Client-ingest panel на konk (generic)
-- [ ] Обновить `docs/frontend/web-slices.md`
+- [x] Catalog: konks / skugrs / competitor-skus (+ detail)
+- [x] Day slices status + invalid points; create/poll/cancel `sliceJobs`
+- [x] Compensation + post-corrections
+- [x] Pack-flips, band-spike, stock-bands (+ discover/batch-correct)
+- [x] Client-ingest panel на konk (generic)
+- [x] Обновить `docs/frontend/web-slices.md`
 
 **DoD:** прогон дня по фикстурам виден в UI (статус дня / точки / jobs).
 

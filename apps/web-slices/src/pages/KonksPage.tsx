@@ -1,56 +1,99 @@
-import { useQuery } from '@tanstack/react-query';
+import { WebApiClientError } from '@balloons/web-api-client';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { api } from '../api/client.js';
+import { PageHeader } from '../components/PageHeader.js';
+import { QueryState } from '../components/QueryState.js';
+import { Banner } from '../components/ui/Banner.js';
+import { Button } from '../components/ui/Button.js';
+import { Field, TextInput } from '../components/ui/Field.js';
+import { TableShell, Td, Th } from '../components/ui/TableShell.js';
 
 export function KonksPage() {
+  const queryClient = useQueryClient();
+  const [name, setName] = useState('');
+  const [title, setTitle] = useState('');
+  const [url, setUrl] = useState('');
+  const [error, setError] = useState<string | null>(null);
+
   const konksQuery = useQuery({
     queryKey: ['catalog', 'konks'],
     queryFn: () => api.listKonks(),
   });
 
+  const seedMutation = useMutation({
+    mutationFn: () => api.seedKonk({ name, title, url }),
+    onSuccess: async () => {
+      setName('');
+      setTitle('');
+      setUrl('');
+      setError(null);
+      await queryClient.invalidateQueries({ queryKey: ['catalog', 'konks'] });
+    },
+    onError: (err) => {
+      setError(err instanceof WebApiClientError ? err.message : 'Seed failed');
+    },
+  });
+
   return (
     <div className="space-y-4">
-      <div>
-        <h1 className="text-xl font-semibold text-slate-900">Konks</h1>
-        <p className="text-sm text-slate-500">Stub catalog list via GET /catalog/konks</p>
-      </div>
+      <PageHeader title="Konks" description="Competitor catalog (list + seed)" />
 
-      {konksQuery.isLoading ? <p className="text-sm text-slate-500">Loading…</p> : null}
-      {konksQuery.isError ? (
-        <p className="text-sm text-red-600">{(konksQuery.error as Error).message}</p>
-      ) : null}
-
-      {konksQuery.data ? (
-        <div className="overflow-x-auto border border-slate-200 bg-white">
-          <table className="min-w-full text-left text-sm">
-            <thead className="border-b border-slate-200 bg-slate-50 text-slate-600">
+      <QueryState
+        isLoading={konksQuery.isLoading}
+        error={konksQuery.error}
+        isEmpty={konksQuery.data?.items.length === 0}
+        emptyMessage="No konks seeded"
+      >
+        {konksQuery.data ? (
+          <TableShell>
+            <thead className="border-b border-slate-200 bg-slate-50">
               <tr>
-                <th className="px-3 py-2 font-medium">Name</th>
-                <th className="px-3 py-2 font-medium">Title</th>
-                <th className="px-3 py-2 font-medium">URL</th>
+                <Th>Name</Th>
+                <Th>Title</Th>
+                <Th>URL</Th>
               </tr>
             </thead>
             <tbody>
-              {konksQuery.data.items.length === 0 ? (
-                <tr>
-                  <td className="px-3 py-3 text-slate-500" colSpan={3}>
-                    No konks seeded
-                  </td>
+              {konksQuery.data.items.map((konk) => (
+                <tr key={konk.id} className="border-t border-slate-100">
+                  <Td className="font-mono">
+                    <Link className="text-slate-900 underline" to={`/konks/${konk.name}`}>
+                      {konk.name}
+                    </Link>
+                  </Td>
+                  <Td>{konk.title}</Td>
+                  <Td className="font-mono text-xs">{konk.url || '—'}</Td>
                 </tr>
-              ) : (
-                konksQuery.data.items.map((konk) => (
-                  <tr key={konk.id} className="border-t border-slate-100">
-                    <td className="px-3 py-2 font-mono text-slate-900">{konk.name}</td>
-                    <td className="px-3 py-2 text-slate-700">{konk.title}</td>
-                    <td className="px-3 py-2 font-mono text-xs text-slate-600">
-                      {konk.url || '—'}
-                    </td>
-                  </tr>
-                ))
-              )}
+              ))}
             </tbody>
-          </table>
+          </TableShell>
+        ) : null}
+      </QueryState>
+
+      <section className="space-y-3 border border-slate-200 bg-white p-4">
+        <h2 className="text-sm font-semibold text-slate-900">Seed konk</h2>
+        <div className="grid gap-3 md:grid-cols-3">
+          <Field label="Name">
+            <TextInput value={name} onChange={(e) => setName(e.target.value)} />
+          </Field>
+          <Field label="Title">
+            <TextInput value={title} onChange={(e) => setTitle(e.target.value)} />
+          </Field>
+          <Field label="URL">
+            <TextInput value={url} onChange={(e) => setUrl(e.target.value)} />
+          </Field>
         </div>
-      ) : null}
+        <Button
+          variant="primary"
+          disabled={!name || !title || seedMutation.isPending}
+          onClick={() => seedMutation.mutate()}
+        >
+          Seed
+        </Button>
+        {error ? <Banner tone="error">{error}</Banner> : null}
+      </section>
     </div>
   );
 }

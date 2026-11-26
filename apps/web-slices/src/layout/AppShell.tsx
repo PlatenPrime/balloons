@@ -7,8 +7,6 @@ const navClass = ({ isActive }: { isActive: boolean }) =>
     isActive ? 'bg-slate-800 text-white' : 'text-slate-700 hover:bg-slate-200',
   ].join(' ');
 
-const stubClass = 'cursor-not-allowed rounded px-2 py-1 text-sm text-slate-400';
-
 export function AppShell() {
   const { logout } = useAuth();
   const navigate = useNavigate();
@@ -16,7 +14,7 @@ export function AppShell() {
   return (
     <div className="min-h-screen">
       <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
           <div className="flex items-center gap-6">
             <span className="text-sm font-semibold tracking-wide text-slate-900">
               balloons / slices
@@ -28,18 +26,27 @@ export function AppShell() {
               <NavLink to="/konks" className={navClass}>
                 Konks
               </NavLink>
-              <span className={stubClass} title="Phase 5.2">
+              <NavLink to="/skugrs" className={navClass}>
                 Skugrs
-              </span>
-              <span className={stubClass} title="Phase 5.2">
+              </NavLink>
+              <NavLink to="/skus" className={navClass}>
                 Skus
-              </span>
-              <span className={stubClass} title="Phase 5.2">
+              </NavLink>
+              <NavLink to="/slices" className={navClass}>
                 Slices
-              </span>
-              <span className={stubClass} title="Phase 5.2">
+              </NavLink>
+              <NavLink to="/jobs" className={navClass}>
                 Jobs
-              </span>
+              </NavLink>
+              <NavLink to="/pack-flips" className={navClass}>
+                Pack-flips
+              </NavLink>
+              <NavLink to="/band-spike" className={navClass}>
+                Band-spike
+              </NavLink>
+              <NavLink to="/stock-bands" className={navClass}>
+                Stock-bands
+              </NavLink>
             </nav>
           </div>
           <button
@@ -54,7 +61,7 @@ export function AppShell() {
           </button>
         </div>
       </header>
-      <main className="mx-auto max-w-5xl px-4 py-6">
+      <main className="mx-auto max-w-6xl px-4 py-6">
         <Outlet />
       </main>
     </div>
