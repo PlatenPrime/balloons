@@ -52,16 +52,17 @@ export function ExcelPage() {
   useEffect(() => {
     if (!defaultSkuId) return;
     if (kind !== 'sku-one-sales' && kind !== 'sku-one-stock') return;
-    try {
-      const parsed = parseExcelParamsJson(paramsJson);
-      const next = withDefaultSkuId(kind, parsed, defaultSkuId);
-      if (next.skuId !== parsed.skuId) {
-        setParamsJson(JSON.stringify(next, null, 2));
+    setParamsJson((raw) => {
+      try {
+        const parsed = parseExcelParamsJson(raw);
+        const next = withDefaultSkuId(kind, parsed, defaultSkuId);
+        if (next.skuId === parsed.skuId) return raw;
+        return JSON.stringify(next, null, 2);
+      } catch {
+        return raw;
       }
-    } catch {
-      // ignore invalid draft JSON while typing
-    }
-  }, [defaultSkuId, kind, paramsJson]);
+    });
+  }, [defaultSkuId, kind]);
 
   const listQuery = useQuery({
     queryKey: ['excel-jobs'],
