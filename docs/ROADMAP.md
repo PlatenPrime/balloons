@@ -400,10 +400,10 @@ Cart/AJAX konk may set `meta.responses` → companion JSON under the pack.
 
 **Сделать:**
 
-- [ ] `apps/extension` MV3
-- [ ] Bridge с JWT / session из web-slices
-- [ ] Capture HTML → pending/ingest API
-- [ ] `docs/frontend/extension.md`
+- [x] `apps/extension` MV3
+- [x] Bridge с JWT / session из web-slices
+- [x] Capture HTML → pending/ingest API
+- [x] `docs/frontend/extension.md`
 
 **DoD:** capture → pending/ingest через api; UI pending в web-slices обновляется.
 

@@ -20,7 +20,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ['apps/web-slices/**/*.{ts,tsx}'],
+    files: ['apps/web-slices/**/*.{ts,tsx}', 'apps/web-analytics/**/*.{ts,tsx}'],
     languageOptions: {
       ecmaVersion: 2022,
       globals: {
@@ -30,6 +30,16 @@ export default tseslint.config(
         ecmaFeatures: {
           jsx: true,
         },
+      },
+    },
+  },
+  {
+    files: ['apps/extension/**/*.{ts,tsx}'],
+    languageOptions: {
+      ecmaVersion: 2022,
+      globals: {
+        ...globals.browser,
+        chrome: 'readonly',
       },
     },
   },

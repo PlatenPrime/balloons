@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Balloons client-ingest",
+  "version": "0.0.0",
+  "description": "Capture competitor HTML and POST to balloons ingest API (generic by konk).",
+  "permissions": ["storage", "scripting", "tabs"],
+  "host_permissions": ["http://localhost:3000/*", "http://*/*", "https://*/*"],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://localhost:5173/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Balloons ingest"
+  }
+}

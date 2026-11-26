@@ -14,35 +14,37 @@ CRUD каталога живёт здесь (seed API для справочни�
 ```bash
 npm run dev:api
 npm run dev:web-slices
+npm run build -w @balloons/extension   # optional: Capture via MV3
 ```
 
-| Process    | Port / env                                               |
-| ---------- | -------------------------------------------------------- |
-| api        | `3000`                                                   |
-| web-slices | `5173` (`VITE_API_URL`, default `http://localhost:3000`) |
+| Process    | Port / env                                                               |
+| ---------- | ------------------------------------------------------------------------ |
+| api        | `3000`                                                                   |
+| web-slices | `5173` (`VITE_API_URL`, default `http://localhost:3000`)                 |
+| extension  | load unpacked `apps/extension/dist` (see [extension.md](./extension.md)) |
 
 Demo login: `admin` / `admin` (JWT в `localStorage`, key `balloons.web-slices.token`).  
 Seeded demo konk: `air`. Default day на `/slices`: `2026-07-15T00:00:00.000Z` (как API smoke).
 
 ## Маршруты
 
-| Path               | Назначение                                                               |
-| ------------------ | ------------------------------------------------------------------------ |
-| `/login`           | Auth (JWT)                                                               |
-| `/health`          | `GET /health` + `GET /auth/me`                                           |
-| `/konks`           | Список + seed                                                            |
-| `/konks/:name`     | Detail + **client-ingest** panel (`pending` / `ingest`; API key = name)  |
-| `/skugrs`          | Список + seed; filters `konkName`, `isSliced`                            |
-| `/skugrs/:id`      | Detail                                                                   |
-| `/skus`            | Список + seed; filters `konkName`, `isInvalid`                           |
-| `/skus/:id`        | Detail                                                                   |
-| `/slices`          | Day meta + points; `slice.run` / `compensation.run` / cancel; `putPoint` |
-| `/jobs`            | Список `sliceJobs` + poll/cancel                                         |
-| `/pack-flips`      | Preview → apply (`/corrections/pack-flips/*`)                            |
-| `/band-spike`      | Discover → preview/apply correct                                         |
-| `/stock-bands`     | List + create                                                            |
-| `/stock-bands/:id` | Update/delete + discover + batch-correct job                             |
-| `/`                | Redirect → `/konks`                                                      |
+| Path               | Назначение                                                                |
+| ------------------ | ------------------------------------------------------------------------- |
+| `/login`           | Auth (JWT)                                                                |
+| `/health`          | `GET /health` + `GET /auth/me`                                            |
+| `/konks`           | Список + seed                                                             |
+| `/konks/:name`     | Detail + **client-ingest** panel (`pending` / paste ingest / **Capture**) |
+| `/skugrs`          | Список + seed; filters `konkName`, `isSliced`                             |
+| `/skugrs/:id`      | Detail                                                                    |
+| `/skus`            | Список + seed; filters `konkName`, `isInvalid`                            |
+| `/skus/:id`        | Detail                                                                    |
+| `/slices`          | Day meta + points; `slice.run` / `compensation.run` / cancel; `putPoint`  |
+| `/jobs`            | Список `sliceJobs` + poll/cancel                                          |
+| `/pack-flips`      | Preview → apply (`/corrections/pack-flips/*`)                             |
+| `/band-spike`      | Discover → preview/apply correct                                          |
+| `/stock-bands`     | List + create                                                             |
+| `/stock-bands/:id` | Update/delete + discover + batch-correct job                              |
+| `/`                | Redirect → `/konks`                                                       |
 
 Исключить: warehouse, btrade/sharik baseline, grabo. Comparison later is peer konk only.
 
@@ -51,7 +53,7 @@ Seeded demo konk: `air`. Default day на `/slices`: `2026-07-15T00:00:00.000Z` 
 1. **Day run:** `/slices?konk=air&day=…` → Run slice → poll banner → day-meta / points (invalid filter).
 2. **Compensation / post-corrections:** Compensation = job `compensation.run`; post-correction = ручной `putPoint` на странице slices (отдельного job kind нет).
 3. **Discover → correct:** pack-flips preview/apply; band-spike discover/correct; stock-band discover + `stock-band.batch-correct` job.
-4. **Client-ingest:** pending list на `/konks/:name` → paste HTML → ingest → refresh pending.
+4. **Client-ingest:** pending list на `/konks/:name` → **Capture** (MV3 extension) или paste HTML → ingest → refresh pending.
 
 ## UI-паттерн
 

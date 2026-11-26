@@ -24,6 +24,7 @@ Cutover (Phase 7) запрещён, пока не закрыт DoD Phase 5 — �
 npm run dev:api
 npm run dev:web-slices
 npm run dev:web-analytics
+npm run build -w @balloons/extension   # or npm run dev:extension
 ```
 
 | Process       | Port   | Status                                        |
@@ -31,6 +32,7 @@ npm run dev:web-analytics
 | api           | `3000` | live (`dev:api`)                              |
 | web-slices    | `5173` | live (`dev:web-slices`, Phase 5.2 ops)        |
 | web-analytics | `5174` | live (`dev:web-analytics`, Phase 5.3 reports) |
+| extension     | —      | load unpacked `apps/extension/dist` (5.4)     |
 
 Env scaffold: `apps/web-slices/.env.example` / `apps/web-analytics/.env.example` → `VITE_API_URL=http://localhost:3000`.  
 CORS на api разрешает оба frontend origin (`WEB_SLICES_ORIGIN` / `WEB_ANALYTICS_ORIGIN`).

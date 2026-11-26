@@ -1,0 +1,38 @@
+body {
+  margin: 0;
+  min-width: 260px;
+  font-family: system-ui, sans-serif;
+  font-size: 13px;
+  color: #0f172a;
+  background: #f8fafc;
+}
+
+main {
+  padding: 12px 14px;
+}
+
+h1 {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+
+#status {
+  margin: 0 0 10px;
+  color: #475569;
+}
+
+dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 10px;
+  margin: 0;
+}
+
+dt {
+  color: #64748b;
+}
+
+dd {
+  margin: 0;
+  word-break: break-all;
+}
