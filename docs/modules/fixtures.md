@@ -57,6 +57,8 @@ Loader + `fetchKonkPageData`: `@balloons/browser`. See [browser.md](browser.md).
 
 ## Rules
 
+- Packs schematically model real page markup; parsers and scrape pipeline are developed and tested against them. The same parsers apply to real product pages (URL/HTML from catalog SKU characteristics / ingest).
 - CI reads fixtures only; live fetch is forbidden in CI.
+- If parsing breaks on real markup, refresh packs manually from a live page into `fixtures/pages/<konk>/` — there is no in-app live `PageSource`.
 - `expected` is the source of truth for golden tests (`fetchKonkPageData`).
 - Comparison is peer konk only — never vs sharik/btrade/warehouse.

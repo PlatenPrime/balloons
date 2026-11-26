@@ -20,7 +20,7 @@ Ids are plain strings (sandbox-friendly; not ObjectId).
 - `CatalogStore` — read + seed + stock-band `updateStockBand` / `deleteStockBand`
 - `SliceStore` — points by `(konkName, productId, date)` + day-meta + `listPointsForProductRange`
 - `ManufacturerDaySalesStore` — materialize replace/list for manufacturer day sales
-- `PageSource.getSkuPageHtml(konk, url)` / `getSkugrPageHtml(konk, url)` — HTML source (`FixturePageSource` in `@balloons/browser`; HTTP later)
+- `PageSource.getSkuPageHtml(konk, url)` / `getSkugrPageHtml(konk, url)` — HTML source (`FixturePageSource` in `@balloons/browser` for sandbox/CI)
 - `OnSliceStockMutated` — hook after point writes
 
 ## `sliceDate`

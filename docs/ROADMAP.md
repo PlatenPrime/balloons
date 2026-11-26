@@ -17,23 +17,23 @@
 
 Долгосрочно оба продукта могут смотреть в одну Mongo; **до cutover balloons работает как песочница** без прод-деплоя и без прод-БД.
 
-**Cutover gate:** переключение writer/прод с `btw-wh-server` на balloons **запрещено**, пока локально не закрыт DoD Phase 5 — один API + `web-slices` + `web-analytics` + extension. Phase 6 (live PageSource) опциональна и cutover **не** разблокирует.
+**Cutover gate:** переключение writer/прод с `btw-wh-server` на balloons **запрещено**, пока локально не закрыт DoD Phase 5 — один API + `web-slices` + `web-analytics` + extension.
 
 ---
 
 ## 1. Нерушимые правила
 
-| Правило                   | Смысл                                                                                               |
-| ------------------------- | --------------------------------------------------------------------------------------------------- |
-| wh-isolation              | Пока не объявлен cutover, `btw-wh-server` не правим «под balloons». Прод-срезы только там.          |
-| no-prod-deploy            | balloons не деплоим в прод на ранних фазах.                                                         |
-| no-mongo-collections      | На фазах 0–6 **не работаем с Mongo-коллекциями**. Persist = in-memory моки форм моделей.            |
-| fixtures-first            | Парсинг и scrape-pipeline проверяются на **HTML fixture packs** конкурентов.                        |
-| one-api-two-fronts        | Один Node API-процесс (срезы+отчёты); два фронта: `web-slices`, `web-analytics`.                    |
-| three-part-before-cutover | Phase 7 (cutover) стартует только после DoD Phase 5: api + оба web + extension.                     |
-| ci-bar                    | `format:check` + `lint` + `build` + `typecheck` + `test:run` на каждый PR; покрытие логики тестами. |
-| docs-with-code            | Модуль/API/frontend → сразу `docs/modules` / `docs/api` / `docs/frontend`.                          |
-| no-real-telegram-in-tests | Уведомления только моки.                                                                            |
+| Правило                   | Смысл                                                                                                                                                                                                                                      |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| wh-isolation              | Пока не объявлен cutover, `btw-wh-server` не правим «под balloons». Прод-срезы только там.                                                                                                                                                 |
+| no-prod-deploy            | balloons не деплоим в прод на ранних фазах.                                                                                                                                                                                                |
+| no-mongo-collections      | На фазах 0–5 **не работаем с Mongo-коллекциями**. Persist = in-memory моки форм моделей.                                                                                                                                                   |
+| fixtures-first            | Packs схематично моделируют разметку страниц; на них пишем/тестируем парсеры. Реальный HTML товара — из характеристик каталога / ingest. Живой HTML вручную — только чтобы обновить packs при поломке парсинга. CI — только disk fixtures. |
+| one-api-two-fronts        | Один Node API-процесс (срезы+отчёты); два фронта: `web-slices`, `web-analytics`.                                                                                                                                                           |
+| three-part-before-cutover | Phase 7 (cutover) стартует только после DoD Phase 5: api + оба web + extension.                                                                                                                                                            |
+| ci-bar                    | `format:check` + `lint` + `build` + `typecheck` + `test:run` на каждый PR; покрытие логики тестами.                                                                                                                                        |
+| docs-with-code            | Модуль/API/frontend → сразу `docs/modules` / `docs/api` / `docs/frontend`.                                                                                                                                                                 |
+| no-real-telegram-in-tests | Уведомления только моки.                                                                                                                                                                                                                   |
 
 ---
 
@@ -81,7 +81,7 @@ onSliceStockMutated({ konk, day, ... }) — хук после записи то�
 ```
 
 Ранние адаптеры: `FixturePageSource`, `InMemoryCatalogStore`, `InMemorySliceStore`, in-process rollup handler.  
-Позже: `HttpPageSource`, `Mongo*` — без смены engine.
+Позже: `Mongo*` — без смены engine.
 
 ### 2.3 Изоляция нагрузки в одном процессе
 
@@ -411,23 +411,6 @@ Cart/AJAX konk may set `meta.responses` → companion JSON under the pack.
 
 ---
 
-### Phase 6 — Optional live PageSource
-
-**Цель:** иногда бить в реальные URL локально; CI на фикстурах.
-
-**Сделать:**
-
-- [ ] `HttpPageSource`
-- [ ] Feature flag `PAGE_SOURCE=fixture|http`
-- [ ] Запрет http в CI / `NODE_ENV=test`
-- [ ] Документация рисков (WAF, rate limit)
-
-**DoD:** руками можно прогнать 1 SKU live; CI не ходит в сеть. Mongo/прод-деплой всё ещё нет.
-
-**Не разблокирует cutover:** Phase 6 можно пропустить или сделать после/параллельно подготовке Phase 7, но **не вместо** Phase 5.
-
----
-
 ### Phase 7 — Persistence + cutover (отдельный этап)
 
 **Precondition:** DoD Phase 5 закрыт (api + `web-slices` + `web-analytics` + extension). Без трёхсоставного локального MVP cutover не начинать.
@@ -477,7 +460,6 @@ Cart/AJAX konk may set `meta.responses` → companion JSON under the pack.
 3. Phase 1.
 4. HTML packs → Phase 2 по konk.
 5. Phase 3 → 4 → **4.1** → **5.0 → 5.1 → 5.2 → 5.3 → 5.4**.
-6. Phase 6 по желанию (не gate для cutover).
-7. Phase 7 — **только** после DoD Phase 5 (трёхсоставной MVP); отдельное решение + `docs/CUTOVER.md`.
+6. Phase 7 — **только** после DoD Phase 5 (трёхсоставной MVP); отдельное решение + `docs/CUTOVER.md`.
 
 Чекбоксы здесь — статус прогресса. Новые идеи → Backlog или правка фазы **до** старта работ по ней.
